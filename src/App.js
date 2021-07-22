@@ -1,25 +1,50 @@
-import logo from './logo.svg';
+import React, { Component, useEffect, useState } from 'react';
 import './App.css';
+import "antd/dist/antd.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Layout, message, Button } from "antd";
+
+import MainLayout from "./components/layout/layout.component";
+// import Login from "./scenes/login/login.page";
+import PrivateRoute from "./components/private-route/private-route";
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+
+const { Footer } = Layout;
+class App extends Component {
+
+  render() {
+    const { isLogged } = this.props;
+
+    return (
+      <div className="App">
+        <Router>
+          <Switch>
+            {/* <Route exact path="/" render={() => localStorage.getItem("isLogged") === "true" ? (<Redirect to="/home" />) : (<Login />)} />
+          <Route exact path="/login" render={() => localStorage.getItem("isLogged") === "true" ? (<Redirect to="/home" />) : (<Login />)} /> */}
+            <PrivateRoute exact path="/dashboard" Component={MainLayout} isLogged={isLogged} />
+            <PrivateRoute exact path="/createemployee" Component={MainLayout} isLogged={isLogged} />
+          </Switch>
+        </Router>
+        <Footer style={{textAlign: "center", padding: "9px 0px 2px 0px"}}>
+          <h6>&copy; onpassive project</h6>
+        </Footer>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
