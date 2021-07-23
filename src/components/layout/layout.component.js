@@ -6,6 +6,9 @@ import { Layout, Menu, Icon, Select } from "antd";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
+import EmployeesTable from '../employeesTable';
+import CreateEmployeesForm from '../createEmployeesForm';
+
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -87,16 +90,16 @@ class MainLayout extends React.Component {
           <Content
             className="site-content-background"
             style={{
-              margin: '24px 16px',
-              marginBottom: 0,
-              padding: 24,
-              minHeight: "Calc(100vh - 118px)",
+              margin: 0,
+              padding: "20px",
+              maxHeight: "Calc(100vh - 94px)"
             }}
           >
-            {this.props.match.path === "/dashboard" ? "Content" : "Create Content"}
+            {this.props.match.path === "/dashboard" ? <EmployeesTable /> : <CreateEmployeesForm />}
+          {/* {this.props.match.path === "/dashboard" ? "EmployeesTable" : "CreateEmployeesForm"} */}
           </Content>
-        </Layout>
       </Layout>
+      </Layout >
     );
   }
 }

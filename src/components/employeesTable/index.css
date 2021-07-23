@@ -1,0 +1,168 @@
+.priorityYes {
+    color: rgb(116, 177, 46);
+}
+
+.priorityNo {
+    color: rgb(255, 3, 26);
+}
+
+.date-picker .ant-calendar-picker-input.ant-input {
+    width: 40% !important;
+    padding-left: 5px !important;
+}
+
+.employee-table .ant-calendar-picker-clear, .ant-calendar-picker-icon {
+    display: inline-block !important;
+    /* hiding the calendar icon , .ant-calendar-picker-icon*/
+    font-size: 15px;
+    top: 53% !important;
+    right: 57% !important;
+}
+
+/* .employee-table .ant-calendar-picker-icon{
+    display: none !important; /* hiding the calendar icon , .ant-calendar-picker-icon
+    font-size: 15px;
+    top: 53% !important;
+    right: 57% !important;
+}  */
+
+.ant-input-disabled {
+    color: black !important;
+}
+
+.master-form-container .checkbox-group1 .ant-input {
+    color: black !important;
+    margin-left: 0px !important;
+}
+
+/* .master-form-container .checkbox-group1 .ant-calendar-picker .ant-input{
+    padding-left: 2px !important;
+} */
+
+.master-form-container .checkbox-group1 .ant-calendar-picker-icon {
+    display: none !important;
+}
+
+.master-form-container .ant-select-selection {
+    box-sizing: border-box;
+    display: flex;
+    background-color: transparent;
+    border: 0px solid #d9d9d9;
+    color: black;
+    font-size: 13px;
+    font-weight: 500;
+    /* border-top-width: 1.02px; */
+    /* border-radius: 4px; */
+    /* outline: none;*/
+}
+
+.master-form-container .ant-select-selection--single {
+    box-sizing: border-box;
+    background-color: white;
+    border: 1px solid #d9d9d9;
+    height: 35px;
+    color: black !important;
+}
+
+.master-form-container .ant-calendar-picker {
+    /* padding: 4px; */
+    margin-left: -5px;
+    width: 105px !important;
+}
+
+.employee-table .add-master-modal .ant-modal-body {
+    overflow: auto;
+    height: 415 !important;
+}
+
+.employee-table .checkbox-group1 .anticon.anticon-close-circle.ant-calendar-picker-clear {
+    display: inline-block !important;
+}
+
+.employee-table .checkbox-group1 .ant-calendar-picker-icon {
+    display: none !important;
+}
+
+.employee-table .anticon.anticon-close-circle.ant-calendar-picker-clear {
+    display: inline-block !important;
+}
+
+.disabledBtnClass {
+    background-color: grey !important;
+    color: black !important;
+    opacity: 0.5;
+}
+
+.btnClass {
+    background-color: "#20346a",
+}
+
+.employee-table .info-container {
+    background-color: #001529;
+    height: 170px;
+    margin-bottom: 15px;
+}
+
+.employee-table .info-container .piechart-info {
+    display: inline-flex;
+    width: 40%;
+    margin: 10px;
+    /* background-color: thistle; */
+}
+
+.employee-table .info-container .department-info {
+    display: inline-flex;
+    width: 58%;
+    /* height: 89%; */
+    margin: 10px 0px;
+}
+
+.employee-table .info-container .department-info .title, .employee-table .info-container .piechart-info .title {
+    display: block !important;
+    font-size: x-large;
+    font-weight: 600;
+    color: white;
+}
+.employee-table .info-container .piechart-info .details {
+    display: flex;
+    /* justify-content: space-around; */
+    /* max-width: 350px; */
+    margin-top: -101px;
+
+}
+.employee-table .info-container .department-info .details {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 150px;
+}
+
+.employee-table .info-container .department-info .details .info-wrapper {
+    display: inline-block;
+    margin: 10px;
+}
+
+.employee-table .info-container .department-info .details .info-wrapper .employees-number {
+    display: flex;
+    justify-content: center;
+    font-size: 50px;
+    color: white;
+    font-weight: 600;
+}
+
+.employee-table .info-container .department-info .details .info-wrapper .employees-department {
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.employee-table .top-container .hub-region-filter {
+    display: inline-flex;
+}
+
+.select-master-region {
+    width: 170px !important;
+    height: 32px !important;
+}
