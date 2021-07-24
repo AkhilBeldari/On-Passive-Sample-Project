@@ -242,7 +242,17 @@ const EmployeesTable = (props) => {
   const [departmentSelected, setDepartmentSelected] = useState();
   const [locationSelected, setLocationSelected] = useState();
   const [ageSelected, setAgeSelected] = useState();
-
+  const [newFormData, setNewFormData] = useState(
+    {
+      id: null,
+      full_name: null,
+      job_title: null,
+      department: null,
+      location: null,
+      age: null,
+      salary: null
+    }
+  )
   // state = {
   //   isModalVisible: false,
   //   isAdd: false,
@@ -706,10 +716,11 @@ const EmployeesTable = (props) => {
 
     }
     else {
-      // console.log("new data ");
-      // a = state.newData;
+      console.log("new data ", newFormData);
+      a = newFormData;
 
-      // if (name === "mandi_name") {
+      <>
+        {/* // if (name === "mandi_name") { 
       //   a.mandi_name = e.target.value;
       // }
       // else if (name === "Mandi_Min_Buying_MT") {
@@ -770,99 +781,93 @@ const EmployeesTable = (props) => {
       //   a.End_Effective_Date = e;
       //   // }
       // }
+      */}
+      </>
 
-      // switch (name) {
-      //   case "mandi_name":
-      //     a.mandi_name = e.target.value;
-      //     setState({ newData: a });
-      //     return;
-      //   case "Mandi_Min_Buying_MT":
-      //     if (e.target.value === "") {
-      //       a.Mandi_Min_Buying_MT = "";
-      //     } else if (e.target.value.match(numberRegex)) {
-      //       a.Mandi_Min_Buying_MT = e.target.value;
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   case "Surplus_Factor":
-      //     if (e.target.value === "") {
-      //       a.Surplus_Factor = "";
-      //     } else if (e.target.value.match(numberRegex)) {
-      //       a.Surplus_Factor = e.target.value;
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   case "mandi_sap_code":
-      //     if (e.target.value === "") {
-      //       a.mandi_sap_code = "";
-      //     } else if (e.target.value.match(alphaNumericRegex)) {
-      //       a.mandi_sap_code = e.target.value.toUpperCase();
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   case "mandi_latitude":
-      //     if (e.target.value === "") {
-      //       a.mandi_latitude = "";
-      //     } else if (e.target.value.match(numberRegex)) {
-      //       a.mandi_latitude = e.target.value;
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   case "mandi_longitude":
-      //     if (e.target.value === "") {
-      //       a.mandi_longitude = "";
-      //     } else if (e.target.value.match(numberRegex)) {
-      //       a.mandi_longitude = e.target.value;
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   case "Start_Effective_Date":
-      //     if (
-      //       !moment(e, "YYYY-MM-DD").isSameOrBefore(
-      //         moment(a[row.key].End_Effective_Date)
-      //       ) &&
-      //       e !== ""
-      //     ) {
-      //       a.Start_Effective_Date = e;
-      //       a.End_Effective_Date = e;
-      //     } else {
-      //       a.Start_Effective_Date = undefined;
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   case "End_Effective_Date":
-      //     if (e === "") {
-      //       a.End_Effective_Date = undefined;
-      //     } else {
-      //       a.End_Effective_Date = e;
-      //     }
-
-      //     setState({ newData: a });
-      //     return;
-      //   default:
-      //     return "";
-      // }
-      // setState({ newData: a });
+      switch (name) {
+        case "full_name":
+          if (e.target.value === "") {
+            setNewFormData({
+              ...newFormData,
+              full_name: ""
+            })
+          } else if (e.target.value.match(alphabetsRegex)) {
+            setNewFormData({
+              ...newFormData,
+              full_name: e.target.value
+            })
+          }
+          return;
+        case "job_title":
+          if (e.target.value === "") {
+            setNewFormData({
+              ...newFormData,
+              job_title: ""
+            })
+          } else if (e.target.value.match(alphabetsRegex)) {
+            setNewFormData({
+              ...newFormData,
+              job_title: e.target.value
+            })
+          }
+          return;
+        case "department":
+          if (e.target.value === "") {
+            setNewFormData({
+              ...newFormData,
+              department: ""
+            })
+          } else if (e.target.value.match(alphabetsRegex)) {
+            setNewFormData({
+              ...newFormData,
+              department: e.target.value
+            })
+          }
+          return;
+        case "location":
+          if (e.target.value === "") {
+            setNewFormData({
+              ...newFormData,
+              location: ""
+            })
+          } else if (e.target.value.match(alphabetsRegex)) {
+            setNewFormData({
+              ...newFormData,
+              location: e.target.value
+            })
+          }
+          return;
+        case "age":
+          if (e.target.value === "") {
+            setNewFormData({
+              ...newFormData,
+              age: ""
+            })
+          } else if (e.target.value.match(numberRegex)) {
+            setNewFormData({
+              ...newFormData,
+              age: e.target.value
+            })
+          }
+          return;
+        case "salary":
+          if (e.target.value === "") {
+            setNewFormData({
+              ...newFormData,
+              salary: ""
+            })
+          } else if (e.target.value.match(salaryRegex)) {
+            setNewFormData({
+              ...newFormData,
+              salary: e.target.value
+            })
+          }
+          return;
+        default:
+          return "";
+      }
     }
   };
-
-  // const disabledDate = (current, rowData, text) => {
-  //   // Can not select days before today and today
-  //   // return current && current > moment().endOf("day");
-  //   console.log("Current", current, rowData, text);
-  //   // if (text !== "new")
-  //   return (
-  //     current && current > moment(rowData.Start_Effective_Date, "YYYY-MM-DD")
-  //   );
-  //   // else
-  //   //   return current && current > newData.Start_Effective_Date;
-  // };
 
   const handleEditClick = (row, index) => {
     // console.log("RowData", row, index);
@@ -1453,7 +1458,28 @@ const EmployeesTable = (props) => {
           <div className="form-header">
             <div className="title"> Create Employee </div>
             <div className="save"> Save </div>
-            <div className="create-submit"> CREATE EMPLOYEES </div>
+            <div className="create-submit">
+              <Button
+                className={"btnClass"}
+                type="primary"
+                size={"small"}
+                style={{
+                  marginLeft: 5,
+                  alignSelf: "center",
+                  color: "white",
+                  borderRadius: 15,
+                  padding: "0px 0px 2px",
+                  height: 31,
+                  backgroundColor: "#20346a",
+                }}
+                block
+                htmlType="submit"
+                // disabled={!rowRecord.isEdit}
+                onClick={() => submitTableRowData(newFormData)}
+              >
+                CREATE EMPLOYEES
+              </Button>
+            </div>
           </div>
           <div className="form">
             <> {/* <Modal
@@ -1975,27 +2001,18 @@ const EmployeesTable = (props) => {
             </>
           </div>
           <div className="form-details">
-            {/* <div className="form-container">
-              <span style={{ fontSize: 18, fontWeight: 700, display: "block", marginTop: 10 }}>Bank Details</span>
+            <div className="form-container">
+              {/* <span style={{ fontSize: 18, fontWeight: 700, display: "block", marginTop: 10 }}>Bank Details</span> */}
               <div className="row" style={{ marginTop: 10 }}>
                 <div
                   className="dualColumnRow"
                   style={{ display: "inline-flex" }}
                 >
-                  <div className="left">Account Holder Name :</div>
-                  <div className="right">
-                    {rowData.AccountHolderName}
-                  </div>
+                  <div className="left"> Full Name </div>
+                  <div className="right"> {newFormData.full_name} </div>
 
-                  <div
-                    className="left"
-                    style={{ width: "230px", marginLeft: "15%" }}
-                  >
-                    Account Number :
-                  </div>
-                  <div className="right">
-                    {rowData.AccountNumber}
-                  </div>
+                  <div lassName="left" style={{ width: "230px", marginLeft: "15%" }} > Job Title </div>
+                  <div className="right"> {newFormData.job_title} </div>
                 </div>
               </div>
               <div className="row">
@@ -2003,91 +2020,27 @@ const EmployeesTable = (props) => {
                   className="dualColumnRow"
                   style={{ display: "inline-flex" }}
                 >
-                  <div className="left">IFSC code :</div>
-                  <div className="right">
-                    {rowData.IFSCcode}
-                  </div>
+                  <div className="left"> Department </div>
+                  <div className="right"> {newFormData.department} </div>
 
-                  <div
-                    className="left"
-                    style={{ width: "230px", marginLeft: "15%" }}
-                  >
-                    Bank Name :
-                  </div>
-                  <div className="right">
-                    {rowData.AccountHolderBankName}
-                  </div>
+                  <div className="left" style={{ width: "230px", marginLeft: "15%" }} > Location </div>
+                  <div className="right"> {newFormData.location} </div>
                 </div>
               </div>
               <div className="row">
-                <div
-                  className="dualColumnRow"
-                  style={{ display: "inline-flex" }}
-                >
-                  <div className="left">PAN Number :</div>
-                  <div className="right">
-                    {rowData.PANNo}
-                  </div>
+                <div className="dualColumnRow" style={{ display: "inline-flex" }} >
+                  <div className="left">Age</div>
+                  <div className="right"> {newFormData.age} </div>
 
-                  <div
-                    className="left"
-                    style={{ width: "230px", marginLeft: "15%" }}
-                  >
-                    GST Number :
-                  </div>
-                  <div className="right">
-                    {rowData.GSTNumber}
-                  </div>
+                  <div className="left" style={{ width: "230px", marginLeft: "15%" }} > Salary </div>
+                  <div className="right"> {newFormData.salary} </div>
                 </div>
               </div>
-              <span style={{ fontSize: 18, fontWeight: 700 }}>Caution Deposit Details</span>
-              <div className="row" style={{ marginTop: 10 }}>
-                <div
-                  className="dualColumnRow"
-                  style={{ display: "inline-flex" }}
-                >
-                  <div className="left">Payment Amount :</div>
-                  <div className="right" style={{ marginTop: "auto", marginBottom: "auto" }}>
-                    {rowData.cautionDepositAmount}
-                  </div>
-
-                  <div
-                    className="left"
-                    style={{ width: "230px", marginLeft: "15%" }}
-                  >
-                    Payment Reference No :
-                  </div>
-                  <div className="right" style={{ width: "180px" }}>
-                    {rowData.cautionDepositReferenceNo}
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div
-                  className="dualColumnRow"
-                  style={{ display: "inline-flex" }}
-                >
-                  <div className="left">Payment Mode :</div>
-                  <div className="right">
-                    {rowData.cautionDepositMode}
-                  </div>
-
-                  <div
-                    className="left"
-                    style={{ width: "230px", marginLeft: "15%" }}
-                  >
-                    Payment Date :
-                  </div>
-                  <div className="right" style={{ width: "180px" }}>
-                    {moment(rowData.cautionDepositDate).format("DD-MM-YYYY")}
-                  </div>
-                </div>
-              </div>
-            </div>*/}
+            </div>
           </div>
         </div>
       }
-    </div>
+    </div >
   );
 }
 
