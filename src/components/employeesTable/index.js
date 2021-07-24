@@ -12,11 +12,18 @@ import {
   DatePicker,
   Radio,
 } from "antd";
+
+import {
+  ExclamationCircleOutlined
+} from '@ant-design/icons';
 import moment from "moment";
 import Chart from 'chart.js/auto';
+import { withRouter } from "react-router-dom";
 
 const { Search } = Input;
 const { Option } = Select;
+const { confirm } = Modal;
+
 /**
  * @description Component for user management tab
  *
@@ -33,185 +40,203 @@ const dummyData = [{
 },
 {
   id: 2,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
+  full_name: "Anil Raj",
+  job_title: "Backend Developer",
   department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  location: "Hyderabad",
+  age: 26,
+  salary: "4,00,000"
 },
 {
   id: 3,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  full_name: "Aklesh",
+  job_title: "Tester",
+  department: "Tester",
+  location: "Banglore",
+  age: 31,
+  salary: "4,50,000"
 },
 {
   id: 4,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  full_name: "Balu",
+  job_title: "Designer",
+  department: "Designer",
+  location: "Pune",
+  age: 35,
+  salary: "8,00,000"
 },
 {
   id: 5,
-  full_name: "Akhil Raj",
+  full_name: "Uday",
   job_title: "UI Developer",
   department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  location: "Delhi",
+  age: 30,
+  salary: "15,00,000"
 },
 {
   id: 6,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
+  full_name: "Yogesh",
+  job_title: "Developer",
   department: "Developer",
   location: "Nizamabad",
   age: 24,
-  salary: "5,00,000"
+  salary: "5,50,000"
 },
 {
   id: 7,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
+  full_name: "Akhil",
+  job_title: "Designer",
+  department: "Designer",
   location: "Nizamabad",
-  age: 24,
+  age: 26,
   salary: "5,00,000"
 },
 {
   id: 8,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  full_name: "Raj",
+  job_title: "Tester",
+  department: "Tester",
+  location: "Hyderabad",
+  age: 26,
+  salary: "9,00,000"
 },
 {
   id: 9,
-  full_name: "Akhil Raj",
+  full_name: "Ravi",
   job_title: "UI Developer",
   department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  location: "Pune",
+  age: 30,
+  salary: "12,00,000"
 },
 {
   id: 10,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  full_name: "Jasmine",
+  job_title: "Backend Developer",
+  department: "Backend Developer",
+  location: "Banglore",
+  age: 26,
+  salary: "4,50,000"
 },
 {
   id: 11,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
-  location: "Nizamabad",
-  age: 24,
+  full_name: "Chethan",
+  job_title: "Tester",
+  department: "Tester",
+  location: "Delhi",
+  age: 35,
   salary: "5,00,000"
 },
 {
   id: 12,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
+  full_name: "Ashwanth",
+  job_title: "Designer",
+  department: "Designer",
   location: "Nizamabad",
   age: 24,
-  salary: "5,00,000"
+  salary: "8,00,000"
 },
 {
   id: 13,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
+  full_name: "Akhila",
+  job_title: "Designer",
+  department: "Designer",
   location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  age: 22,
+  salary: "7,00,000"
 },
 {
   id: 14,
-  full_name: "Akhil Raj",
-  job_title: "UI Developer",
-  department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  full_name: "Srujan",
+  job_title: "Backend Developer",
+  department: "Backend Developer",
+  location: "Hyderabad",
+  age: 28,
+  salary: "11,00,000"
 },
 {
   id: 15,
-  full_name: "Akhil Raj",
+  full_name: "Ashley",
   job_title: "UI Developer",
   department: "Developer",
-  location: "Nizamabad",
-  age: 24,
-  salary: "5,00,000"
+  location: "Delhi",
+  age: 28,
+  salary: "15,00,000"
 }]
 
 const departmentList = [{
-  value: "Backend Developer",
-  key: "backend developer"
+  text: "Backend Developer",
+  value: "backend developer"
 }, {
-  value: "Designer",
-  key: "designer"
+  text: "Designer",
+  value: "designer"
 }, {
-  value: "Developer",
-  key: "developer"
+  text: "Developer",
+  value: "developer"
 }, {
-  value: "Tester",
-  key: "tester"
+  text: "Tester",
+  value: "tester"
 }, {
-  value: "UI Developer",
-  key: "ui developer"
+  text: "UI Developer",
+  value: "ui developer"
 },]
 
 const locationList = [{
-  value: "Hyderabad",
-  key: "hyderabad"
+  text: "Hyderabad",
+  value: "hyderabad"
 }, {
-  value: "Nizamabad",
-  key: "nizamabad"
+  text: "Nizamabad",
+  value: "nizamabad"
 }, {
-  value: "Bangalore",
-  key: "bangalore"
+  text: "Bangalore",
+  value: "bangalore"
 }, {
-  value: "Pune",
-  key: "pune"
+  text: "Pune",
+  value: "pune"
 }, {
-  value: "Delhi",
-  key: "delhi"
+  text: "Delhi",
+  value: "delhi"
 },]
 
 const ageList = [{
-  value: "22",
-  key: 22
+  text: "22",
+  value: 22
 }, {
-  value: "24",
-  key: 24
+  text: "24",
+  value: 24
 }, {
-  value: "26",
-  key: 26
+  text: "26",
+  value: 26
 }, {
-  value: "30",
-  key: 30
+  text: "30",
+  value: 30
 }, {
-  value: "35",
-  key: 35
+  text: "35",
+  value: 35
 },]
 
+const employeeDetails = [{
+  department: "Backend Developer",
+  value: 25
+}, {
+  department: "Designer",
+  value: 20
+}, {
+  department: "Developer",
+  value: 35
+}, {
+  department: "Tester",
+  value: 20
+}, {
+  department: "UI Developer",
+  value: 20
+}]
+
 const EmployeesTable = (props) => {
-  const { } = props;
-  const [mandiTableData, setMandiTableData] = useState(dummyData);
+  const { history } = props;
+  const [employeesTableData, setEmployeesTableData] = useState(dummyData);
+  const [rowData, setRowData] = useState();
   const [searchText, setSearchText] = useState(null);
   const [isSpinnerOnLoad, setIsSpinnerOnLoad] = useState(false);
   const [departmentSelected, setDepartmentSelected] = useState();
@@ -225,7 +250,7 @@ const EmployeesTable = (props) => {
   //   userBranches: null,
   //   searchText: null,
   //   searchUserType: 0,
-  //   mandiTableData: [],
+  //   employeesTableData: [],
   //   primaryHubList: [],
   //   hubRegionList: [],
   //   mandiRegionList: [],
@@ -266,30 +291,15 @@ const EmployeesTable = (props) => {
   //   selectedRegionList: [],
   //   recordCount: 0,
   // };
-  const employeeDetails = [{
-    department: "Backend Developer",
-    value: 25
-  }, {
-    department: "Designer",
-    value: 20
-  }, {
-    department: "Developer",
-    value: 35
-  }, {
-    department: "Tester",
-    value: 20
-  }, {
-    department: "UI Developer",
-    value: 20
-  }]
+ 
   const setTableData = () => {
-    // console.log("mandi table data ", mandiTableData);
+    // console.log("mandi table data ", employeesTableData);
     if (
-      mandiTableData !== undefined ||
-      mandiTableData.length >= 0
+      employeesTableData !== undefined ||
+      employeesTableData.length >= 0
     ) {
       // setIsSpinnerOnLoad(true);
-      let employeeTableData = mandiTableData.map((employee, index) => {
+      let employeeTableData = employeesTableData.map((employee, index) => {
         return {
           key: employee.id,
           full_name: employee.full_name,
@@ -301,40 +311,76 @@ const EmployeesTable = (props) => {
         };
       });
 
-      let dataAfterSearch = employeeTableData;
-
-      if (searchText) {
-        dataAfterSearch = dataAfterSearch.filter(
-          (item) =>
-            (item.full_name !== null &&
-              item.full_name
-                .toLowerCase()
-                .includes(searchText.toLowerCase())) ||
-            (item.job_title !== null &&
-              item.job_title
-                .toLowerCase()
-                .includes(searchText.toLowerCase())) ||
-            (item.department !== null &&
-              item.department
-                .toLowerCase()
-                .includes(searchText.toLowerCase())) ||
-            (item.location !== null &&
-              item.location
-                .toLowerCase()
-                .includes(searchText.toLowerCase())) ||
-            (item.salary !== null &&
-              item.salary
-                .toLowerCase()
-                .includes(searchText.toLowerCase()))
-        );
-      }
-
+      setEmployeesTableData(employeeTableData)
       // setIsSpinnerOnLoad(false);
-      return dataAfterSearch;
+      // return dataAfterSearch;
     } else {
-      return mandiTableData;
+      setEmployeesTableData(dummyData);
     }
   };
+
+  useEffect(() => {
+    if (departmentSelected || locationSelected || ageSelected) {
+      // console.log("departmentSelected Text", departmentSelected, locationSelected, ageSelected)
+      let dataAfterFilter = dummyData.filter(
+        (item) =>
+          (item.department !== null && item.department !== undefined && departmentSelected !== undefined &&
+            item.department
+              .toLowerCase()
+              .includes(departmentSelected.toLowerCase())) ||
+          (item.location !== null && item.location !== undefined && locationSelected !== undefined &&
+            item.location
+              .toLowerCase()
+              .includes(locationSelected.toLowerCase())) ||
+          (item.age !== null && item.age !== undefined && ageSelected !== undefined &&
+            item.age.toString()
+              .toLowerCase()
+              .includes(ageSelected.toString().toLowerCase()))
+      );
+      setEmployeesTableData(dataAfterFilter);
+    }
+    else {
+      setEmployeesTableData(dummyData)
+    }
+  }, [departmentSelected, locationSelected, ageSelected])
+
+  useEffect(() => {
+
+    if (searchText) { // && (!departmentSelected && !locationSelected && !ageSelected)
+      // console.log("Search Text", searchText)
+      let dataAfterSearch = dummyData.filter(
+        (item) =>
+          (item.full_name !== null &&
+            item.full_name.replaceAll(" ", "")
+              .toLowerCase()
+              .includes(searchText.replaceAll(" ", "").toLowerCase())) ||
+          (item.job_title !== null &&
+            item.job_title.replaceAll(" ", "")
+              .toLowerCase()
+              .includes(searchText.replaceAll(" ", "").toLowerCase())) ||
+          (item.department !== null &&
+            item.department
+              .toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+          (item.age !== null &&
+            item.age.toString()
+              .toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+          (item.location !== null &&
+            item.location
+              .toLowerCase()
+              .includes(searchText.toLowerCase())) ||
+          (item.salary !== null &&
+            item.salary.replaceAll(",", "")
+              .toLowerCase()
+              .includes(searchText.replaceAll(",", "").toLowerCase()))
+      );
+      setEmployeesTableData(dataAfterSearch);
+    }
+    else {
+      setEmployeesTableData(dummyData)
+    }
+  }, [searchText])
 
   const TableColumnHeader = (props) => {
     const { title, subtitle } = props;
@@ -367,7 +413,7 @@ const EmployeesTable = (props) => {
   };
 
   const createFilters = (label) => {
-    let filterData = mandiTableData;
+    let filterData = employeesTableData;
     //#region remove duplicate objects
     let uniqueFilterData = [];
 
@@ -483,6 +529,7 @@ const EmployeesTable = (props) => {
       //   });
     }
   };
+
   const validate = (rowData) => {
     // console.log("ITem For VAlidation ----------------------------> ", rowData);
 
@@ -648,7 +695,7 @@ const EmployeesTable = (props) => {
 
     // if (isPopup === false) {
     //   // console.log("region ame ", value, optionlabel)
-    //   a = mandiTableData;
+    //   a = employeesTableData;
 
     //   if (target === "is_active") {
     //     a[row.key].is_active = Boolean(value);
@@ -675,7 +722,7 @@ const EmployeesTable = (props) => {
     //   //   a[row.key].branch_id = value;
     //   // }
     //   console.log(" check value of a ", a);
-    //   this.setState({ mandiTableData: a });
+    //   this.setState({ employeesTableData: a });
     // } else {
     //   // console.log("region ame1 ", value, optionlabel)
     //   a = this.state.newData;
@@ -726,12 +773,12 @@ const EmployeesTable = (props) => {
     var numberRegex = /^[0-9.]+$/;
     if (isPopup === false) {
       // console.log("hub table data");
-      a = mandiTableData;
+      a = employeesTableData;
 
       switch (name) {
         case "mandi_name":
           a[row.key].mandi_name = e.target.value;
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "Mandi_Min_Buying_MT":
           if (e.target.value === "") {
@@ -740,7 +787,7 @@ const EmployeesTable = (props) => {
             a[row.key].Mandi_Min_Buying_MT = e.target.value;
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "Surplus_Factor":
           if (e.target.value === "") {
@@ -749,7 +796,7 @@ const EmployeesTable = (props) => {
             a[row.key].Surplus_Factor = e.target.value;
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "mandi_sap_code":
           if (e.target.value === "") {
@@ -758,7 +805,7 @@ const EmployeesTable = (props) => {
             a[row.key].mandi_sap_code = e.target.value.toUpperCase();
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "mandi_latitude":
           if (e.target.value === "") {
@@ -767,7 +814,7 @@ const EmployeesTable = (props) => {
             a[row.key].mandi_latitude = e.target.value;
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "mandi_longitude":
           if (e.target.value === "") {
@@ -776,7 +823,7 @@ const EmployeesTable = (props) => {
             a[row.key].mandi_longitude = e.target.value;
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "Start_Effective_Date":
           if (
@@ -791,7 +838,7 @@ const EmployeesTable = (props) => {
             a[row.key].Start_Effective_Date = undefined;
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         case "End_Effective_Date":
           if (e === "") {
@@ -800,7 +847,7 @@ const EmployeesTable = (props) => {
             a[row.key].End_Effective_Date = e;
           }
 
-          this.setState({ mandiTableData: a });
+          this.setState({ employeesTableData: a });
           return;
         default:
           return "";
@@ -868,7 +915,7 @@ const EmployeesTable = (props) => {
       //   }
       // }
       // console.log("Data modified", a, a[row.key].Start_Effective_Date, a[row.key].End_Effective_Date);
-      // this.setState({ mandiTableData: a });
+      // this.setState({ employeesTableData: a });
     } else {
       // console.log("new data ");
       a = this.state.newData;
@@ -1028,15 +1075,10 @@ const EmployeesTable = (props) => {
     //   return current && current > newData.Start_Effective_Date;
   };
 
-  const handleEditClick = (rowData, index) => {
-    // console.log("RowData", rowData, index);
-
-    // let temp = mandiTableData;
-
-    // temp[rowData.key].isEdit = true;
-
-    let tempData = mandiTableData.map((item) => {
-      if (item.mandi_id === rowData.mandi_id) {
+  const handleEditClick = (row, index) => {
+    // console.log("RowData", row, index);
+    let tempData = employeesTableData.map((item) => {
+      if (item.id === row.id) {
         return {
           ...item,
           isEdit: true
@@ -1049,44 +1091,53 @@ const EmployeesTable = (props) => {
       }
     })
     // console.log("Temp DAta", tempData);
-    this.setState({ mandiTableData: tempData });
-    // this.setState({ mandiTableData: temp });
-    this.setState({ rowData: rowData });
+    setEmployeesTableData(tempData);
+    setRowData(row)
   };
 
-  const handleCancelClick = (rowData, index) => {
-    let tempData = mandiTableData.map((item) => {
-      if (item.mandi_id === rowData.mandi_id) {
-        return this.state.rowData;
+  const handleCancelClick = (row, index) => {
+    let tempData = employeesTableData.map((item) => {
+      if (item.id === row.id) {
+        return rowData;
       } else {
         return item;
       }
     });
-    this.setState({ mandiTableData: tempData });
+    setEmployeesTableData(tempData);
   };
 
+  function showPromiseConfirm(row, index) {
+    setDeleteRowData(row);
+    confirm({
+      title: "Delete Employee Details",
+      icon: <ExclamationCircleOutlined />,
+      content: `Are you sure you want to delete ${row.full_name} Data?`,
+      okText: "Yes",
+      cancelText: "No",
+      onOk() {
+        handleDeleteClick(row, index);
+      },
+      onCancel() { },
+    });
+  }
+
+  const handleDeleteClick = (row, index) => {
+    setConfirmationModalVisible(true);
+    let tempData = employeesTableData.filter((item) => item.id !== row.id);
+    setEmployeesTableData(tempData);
+    setConfirmationModalVisible(false);
+  }
+
   const handleDepartmentSelect = (value, props) => {
-    console.log("handle branch ", value, props, props.key);
-    // this.setState(
-    //   { selectedBranchName: props.key, selectedBranchValue: value },
-    //   () => this.getMasterMandi()
-    // );
+    setDepartmentSelected(value);
   };
 
   const handleLocationSelect = (value, props) => {
-    console.log("handle Region ", value, props, props.key);
-    // this.setState(
-    //   { selectedRegionName: props.key, selectedRegionValue: value },
-    //   () => this.getMasterMandi()
-    // );
+    setLocationSelected(value);
   };
 
   const handleAgeSelect = (value, props) => {
-    console.log("handle Region ", value, props, props.key);
-    // this.setState(
-    //   { selectedRegionName: props.key, selectedRegionValue: value },
-    //   () => this.getMasterMandi()
-    // );
+    setAgeSelected(value);
   };
 
   const userTableProps = {
@@ -1106,7 +1157,7 @@ const EmployeesTable = (props) => {
    * @memberof CombinedChart
    */
   const buildChart = () => {
-    let myChartPie;
+    let myChartPie = "0";
     console.log("Cahrt ID", myChartPie, typeof myChartPie);
     if (typeof myChartPie !== "undefined" && typeof myChartPie !== undefined) console.log("Cahrt ID", myChartPie, typeof myChartPie);
     // else myChartPie.destroy();
@@ -1182,6 +1233,7 @@ const EmployeesTable = (props) => {
             </span>{" "}
           <Select
             // disabled={!this.state.isAdd}
+            allowClear
             showSearch
             optionFilterProp="children"
             className={"select-master-region"}
@@ -1193,13 +1245,14 @@ const EmployeesTable = (props) => {
             {departmentList !== null &&
               departmentList.length &&
               departmentList.map((item, idx) => (
-                <Option value={item.value} key={item.key}>
-                  {item.value}
+                <Option value={item.value} key={item.value}>
+                  {item.text}
                 </Option>
               ))}
           </Select>
           <Select
             // disabled={!this.state.isAdd}
+            allowClear
             showSearch
             optionFilterProp="children"
             className={"select-master-region"}
@@ -1211,13 +1264,14 @@ const EmployeesTable = (props) => {
             {locationList !== null &&
               locationList.length &&
               locationList.map((item, idx) => (
-                <Option value={item.value} key={item.key}>
-                  {item.value}
+                <Option value={item.value} key={item.value}>
+                  {item.text}
                 </Option>
               ))}
           </Select>
           <Select
             // disabled={!this.state.isAdd}
+            allowClear
             showSearch
             optionFilterProp="children"
             className={"select-master-region"}
@@ -1229,8 +1283,8 @@ const EmployeesTable = (props) => {
             {ageList !== null &&
               ageList.length &&
               ageList.map((item, idx) => (
-                <Option value={item.value} key={item.key}>
-                  {item.value}
+                <Option value={item.value} key={item.value}>
+                  {item.text}
                 </Option>
               ))}
           </Select>
@@ -1248,7 +1302,6 @@ const EmployeesTable = (props) => {
           }}
         >
           <Search
-            // disabled={!this.state.isAdd}
             placeholder="Search"
             allowClear
             onChange={(e) => setSearchText(e.target.value)}
@@ -1264,8 +1317,7 @@ const EmployeesTable = (props) => {
               color: "white",
               marginLeft: 5
             }}
-            // disabled={!this.state.isAdd}
-            onClick={() => this.setModalVisibility(true)}
+            onClick={() => history.push("/createemployee")}
           >
             &#10010; Add
             </Button>
@@ -2079,8 +2131,8 @@ const EmployeesTable = (props) => {
                           // disabled={this.state.isSubmitted}
                           onClick={() =>
                             rowRecord.isEdit
-                              ? this.submitTableRowData(rowRecord)
-                              : this.handleEditClick(rowRecord, index)
+                              ? submitTableRowData(rowRecord)
+                              : handleEditClick(rowRecord, index)
                           }
                         >
                           {rowRecord.isEdit ? "Submit" : "Edit"}
@@ -2105,9 +2157,11 @@ const EmployeesTable = (props) => {
                           }}
                           block
                           htmlType="submit"
-                          disabled={!rowRecord.isEdit}
+                          // disabled={!rowRecord.isEdit}
                           onClick={() =>
-                            this.handleCancelClick(rowRecord, index)
+                            rowRecord.isEdit
+                              ? handleCancelClick(rowRecord, index)
+                              : showPromiseConfirm(rowRecord, index)
                           }
                         >
                           {rowRecord.isEdit ? "Cancel" : "Delete"}
@@ -2118,8 +2172,8 @@ const EmployeesTable = (props) => {
                 },
               },
             ]}
-            // dataSource={[]}
-            dataSource={setTableData()}
+            // dataSource={setTableData()}
+            dataSource={employeesTableData}
           />
         </div>
       </Spin>
@@ -2127,4 +2181,4 @@ const EmployeesTable = (props) => {
   );
 }
 
-export default EmployeesTable;
+export default withRouter(EmployeesTable);
