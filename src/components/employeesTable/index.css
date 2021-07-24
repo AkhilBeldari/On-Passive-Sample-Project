@@ -87,10 +87,9 @@
     display: inline-block !important;
 }
 
-.disabledBtnClass {
-    background-color: grey !important;
-    color: black !important;
-    opacity: 0.5;
+.deleteBtnClass {
+    border: 1px solid red !important;
+    background-color: red !important;
 }
 
 .btnClass {

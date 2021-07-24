@@ -95,10 +95,11 @@ class MainLayout extends React.Component {
               maxHeight: "Calc(100vh - 94px)"
             }}
           >
-            {this.props.match.path === "/dashboard" ? <EmployeesTable /> : <CreateEmployeesForm />}
-          {/* {this.props.match.path === "/dashboard" ? "EmployeesTable" : "CreateEmployeesForm"} */}
+            <EmployeesTable isTable={this.props.match.path === "/dashboard"} />
+            {/* {this.props.match.path === "/dashboard" ? <EmployeesTable /> : <CreateEmployeesForm />} */}
+            {/* {this.props.match.path === "/dashboard" ? "EmployeesTable" : "CreateEmployeesForm"} */}
           </Content>
-      </Layout>
+        </Layout>
       </Layout >
     );
   }

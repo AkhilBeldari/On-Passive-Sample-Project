@@ -234,7 +234,7 @@ const employeeDetails = [{
 }]
 
 const EmployeesTable = (props) => {
-  const { history } = props;
+  const { history, isTable } = props;
   const [employeesTableData, setEmployeesTableData] = useState(dummyData);
   const [rowData, setRowData] = useState();
   const [searchText, setSearchText] = useState(null);
@@ -291,31 +291,35 @@ const EmployeesTable = (props) => {
   //   selectedRegionList: [],
   //   recordCount: 0,
   // };
- 
+
   const setTableData = () => {
-    // console.log("mandi table data ", employeesTableData);
+    console.log("mandi table data ", employeesTableData);
     if (
       employeesTableData !== undefined ||
       employeesTableData.length >= 0
     ) {
       // setIsSpinnerOnLoad(true);
-      let employeeTableData = employeesTableData.map((employee, index) => {
+      let modifiedEmployeeTableData = employeesTableData.map((employee, index) => {
         return {
-          key: employee.id,
+          key: index,
+          id: employee.id,
           full_name: employee.full_name,
           job_title: employee.job_title,
           department: employee.department,
           location: employee.location,
           age: employee.age,
-          salary: employee.salary
+          salary: employee.salary,
+          isEdit: employee.isEdit === undefined || employee.isEdit === null ? false : employee.isEdit
         };
       });
 
-      setEmployeesTableData(employeeTableData)
+      // setEmployeesTableData(modifiedEmployeeTableData)
       // setIsSpinnerOnLoad(false);
-      // return dataAfterSearch;
+      console.log("Modified => ", modifiedEmployeeTableData);
+      return modifiedEmployeeTableData;
     } else {
-      setEmployeesTableData(dummyData);
+      // setEmployeesTableData(dummyData);
+      return dummyData;
     }
   };
 
@@ -437,96 +441,12 @@ const EmployeesTable = (props) => {
   };
 
   const submitTableRowData = (row) => {
-    if (this.validate(row)) {
-      this.setState({ isSubmitted: true });
-
-      this.setState({ isSpinnerOnLoad: true });
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("accessToken"),
-      };
-      let params = {
-        mandi_id: row.mandi_id,
-        mandi_name: row.mandi_name,
-        mandi_latitude:
-          row.mandi_latitude === "" || row.mandi_latitude === undefined
-            ? null
-            : row.mandi_latitude,
-        mandi_longitude:
-          row.mandi_longitude === "" || row.mandi_longitude === undefined
-            ? null
-            : row.mandi_longitude,
-        is_main_mandi: row.is_main_mandi,
-        is_priority_mandi: row.is_priority_mandi,
-        is_active: row.is_active,
-        mandi_sap_code: row.mandi_sap_code === "" ? null : row.mandi_sap_code,
-        region_id: row.region_id,
-        branch_id: row.branch_id,
-        primary_hub_id: row.hub_id,
-        hub_name: row.hub_name,
-        main_mandi:
-          row.main_mandi !== "" || row.main_mandi !== undefined
-            ? row.main_mandi
-            : null,
-        Mandi_Min_Buying_MT:
-          row.Mandi_Min_Buying_MT === "" ||
-            row.Mandi_Min_Buying_MT === undefined
-            ? null
-            : row.Mandi_Min_Buying_MT,
-        Surplus_Factor:
-          row.Surplus_Factor === "" || row.Surplus_Factor === undefined
-            ? null
-            : row.Surplus_Factor,
-        Start_Effective_Date:
-          row.Start_Effective_Date === null ||
-            row.Start_Effective_Date === undefined ||
-            row.Start_Effective_Date === ""
-            ? null
-            : moment(row.Start_Effective_Date).format("YYYY-MM-DD"),
-        End_Effective_Date:
-          row.End_Effective_Date === null ||
-            row.End_Effective_Date === undefined ||
-            row.End_Effective_Date === ""
-            ? null
-            : moment(row.End_Effective_Date).format("YYYY-MM-DD"),
-      };
-      // console.log("row on submit ", params);
-      // API.put("/master_mandi", params, {
-      //   headers: headers,
-      // })
-      //   .then((response) => {
-      //     console.log("err Msg", response);
-      //     if (response.status === 200 && response.data.status) {
-      //       message.success(response.data.message, 5);
-      //       this.setModalVisibility(false);
-      //       this.getMasterMandi();
-      //       this.setState({ isSpinnerOnLoad: false, isSubmitted: false });
-      //     } else if (!response.data.status) {
-      //       this.setState({ isSpinnerOnLoad: false, isSubmitted: false });
-      //       message.error(response.data.message, 5);
-      //       // this.setModalVisibility(false);
-      //     } else {
-      //       this.setState({ isSpinnerOnLoad: false, isSubmitted: false });
-      //       message.error("Please try again", 5);
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     if (err) {
-      //       console.log("err Msg 400", err.response);
-      //       if (err.response && err.response.status === 400)
-      //         message.error("Something went wrong. Please try again later.", 5);
-      //       else {
-      //         message.error(
-      //           "Something went wrong.. Please try again later.",
-      //           5
-      //         );
-      //       }
-      //     } else {
-      //       message.error("Something went wrong... Please try again later.", 5);
-      //     }
-      //     this.setState({ isSpinnerOnLoad: false, isSubmitted: false });
-      //     // this.setModalVisibility(false);
-      //   });
+    console.log("Submit Row DAta", row);
+    if (validate(row)) {
+      let newData = setTableData();
+      newData[row.key] = row;
+      newData[row.key].isEdit = false;
+      setEmployeesTableData(newData);
     }
   };
 
@@ -546,134 +466,90 @@ const EmployeesTable = (props) => {
     // }
 
     if (
-      rowData.mandi_name === null ||
-      rowData.mandi_name === undefined ||
-      rowData.mandi_name === ""
+      rowData.full_name === null ||
+      rowData.full_name === undefined ||
+      rowData.full_name === ""
     ) {
-      message.error(`Please enter Mandi Name !`, 5);
-      return false;
-    } else if (rowData.Mandi_Min_Buying_MT < 0) {
-      message.error(
-        `Minimum buying price cannot be less than 0 for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`,
-        5
-      );
+      message.error(`Please enter Full Name !`, 5);
       return false;
     } else if (
-      rowData.hub_name === null ||
-      rowData.hub_name === undefined ||
-      rowData.hub_name === ""
+      rowData.job_title === null ||
+      rowData.job_title === undefined ||
+      rowData.job_title === ""
     ) {
-      message.error(`Please Select Primary Hub !`, 5);
+      message.error(`Please enter Job Title !`, 5);
       return false;
     } else if (
-      rowData.region_name === null ||
-      rowData.region_name === undefined ||
-      rowData.region_name === ""
+      rowData.department === null ||
+      rowData.department === undefined ||
+      rowData.department === ""
     ) {
-      message.error(`Please Select Mandi region !`, 5);
+      message.error(`Please enter Department !`, 5);
+      return false;
+    } else if (
+      rowData.location === null ||
+      rowData.location === undefined ||
+      rowData.location === ""
+    ) {
+      message.error(`Please enter Location !`, 5);
+      return false;
+    } else if (
+      rowData.age === null ||
+      rowData.age === undefined ||
+      rowData.age === ""
+    ) {
+      message.error(`Please enter Age !`, 5);
+      return false;
+    } else if (
+      rowData.salary === null ||
+      rowData.salary === undefined ||
+      rowData.salary === "") {
+      message.error(`Please enter Salary !`, 5);
       return false;
     }
-    // else if (rowData.mandi_sap_code === null || rowData.mandi_sap_code === undefined || rowData.mandi_sap_code === "") {
-    //   message.error(`Please enter the SAP code`, 5);
-    //   return false;
-    // }
-    // else if (rowData.Surplus_Factor === null || rowData.Surplus_Factor === undefined || rowData.Surplus_Factor === "") {
-    //   message.error(`Please enter the Surplus Factor for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`,5);
-    //   return false;
-    // }
-
-    // else if (!rowData.Surplus_Factor.match(numberRegex)) {
-    //   message.error(`Please enter valid Surplus Factor for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`, 5);
-    //   return false;
-    // }
-    else if (rowData.Surplus_Factor < 0) {
-      message.error(
-        `Surplus Factor cannot be less than 0 for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`,
-        5
-      );
-      return false;
-    }
-
-    // else if (rowData.mandi_sap_code === null || rowData.mandi_sap_code === undefined || rowData.mandi_sap_code === "") {
-    //   message.error(`Please enter the SAP code for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`, 5);
-    //   return false;
-    // }
-
-    // else if (!rowData.mandi_sap_code.match(alphaNumericRegex)) {
-    //   message.error(`Please enter Alpha Numeric SAP code for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`, 5);
-    //   return false;
-    // }
-
-    // else if (!rowData.mandi_latitude.match(numberRegex)) {
-    //   message.error(`Please enter valid Mandi Latitude for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`, 5);
-    //   return false;
-    // }
-    else if (rowData.mandi_latitude < 0) {
-      message.error(
-        `Mandi Latitude cannot be less than 0 for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`,
-        5
-      );
+    else if (rowData.salary < 0) {
+      message.error(`Salary cannot be less than 0 !`, 5);
       return false;
     }
 
-    // else if (!rowData.mandi_longitude.match(numberRegex)) {
-    //   message.error(`Please enter valid Mandi Longitude for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`, 5);
-    //   return false;
-    // }
-    else if (rowData.mandi_longitude < 0) {
-      message.error(
-        `Mandi Longitude cannot be less than 0 for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`,
-        5
-      );
-      return false;
-    }
-
-    // else if (
-    //   rowData.revised_min_price >= rowData.revised_max_price
-    // ) {
-    //   message.error(
-    //     `The maximum price must be greater than the minimum price for ${rowData.hub_name}, ${rowData.variety_name}, ${rowData.claim_name} and ${rowData.division_name} !`
-    //   ,5);
-    //   return false;
-    // }
     return true;
   };
 
-  const setModalVisibility = (status) => {
-    if (status) {
-      const nData = {
-        End_Effective_Date: null,
-        Mandi_Min_Buying_MT: null,
-        Start_Effective_Date: null,
-        Surplus_Factor: null,
-        branch_id: null,
-        branch_name: "",
-        branch_sap_code: "",
-        hub_id: null,
-        hub_latitude: null,
-        hub_longitude: null,
-        hub_name: "",
-        hub_region: "",
-        hub_region_id: null,
-        hub_sap_code: "",
-        is_active: true,
-        is_main_mandi: true,
-        is_priority_mandi: true,
-        mandi_latitude: null,
-        mandi_longitude: null,
-        mandi_name: "",
-        mandi_sap_code: "",
-        region_id: null,
-        region_name: "",
-        state_name: "",
-        isEdit: false,
-      };
+  // const setModalVisibility = (status) => {
+  //   if (status) {
+  //     const nData = {
+  //       End_Effective_Date: null,
+  //       Mandi_Min_Buying_MT: null,
+  //       Start_Effective_Date: null,
+  //       Surplus_Factor: null,
+  //       branch_id: null,
+  //       branch_name: "",
+  //       branch_sap_code: "",
+  //       hub_id: null,
+  //       hub_latitude: null,
+  //       hub_longitude: null,
+  //       hub_name: "",
+  //       hub_region: "",
+  //       hub_region_id: null,
+  //       hub_sap_code: "",
+  //       is_active: true,
+  //       is_main_mandi: true,
+  //       is_priority_mandi: true,
+  //       mandi_latitude: null,
+  //       mandi_longitude: null,
+  //       mandi_name: "",
+  //       mandi_sap_code: "",
+  //       region_id: null,
+  //       region_name: "",
+  //       state_name: "",
+  //       isEdit: false,
+  //     };
 
-      this.setState({ newData: nData });
-    }
+  //     setState({ newData: nData });
+  //   }
 
-    this.setState({ isModalVisible: status });
-  };
+  //   setState({ isModalVisible: status });
+  // };
 
   const handleDropdownChange = (value, row, target, index, optionlabel, isPopup) => {
     console.log(
@@ -685,7 +561,7 @@ const EmployeesTable = (props) => {
       optionlabel,
       isPopup
     );
-    // const specificHub = this.state.primaryHubList.filter((item) => {
+    // const specificHub = state.primaryHubList.filter((item) => {
     //   if (item.territory_id === value) {
     //     return item;
     //   }
@@ -722,10 +598,10 @@ const EmployeesTable = (props) => {
     //   //   a[row.key].branch_id = value;
     //   // }
     //   console.log(" check value of a ", a);
-    //   this.setState({ employeesTableData: a });
+    //   setState({ employeesTableData: a });
     // } else {
     //   // console.log("region ame1 ", value, optionlabel)
-    //   a = this.state.newData;
+    //   a = state.newData;
 
     //   if (target === "is_active") {
     //     a.is_active = Boolean(value);
@@ -749,176 +625,89 @@ const EmployeesTable = (props) => {
     //   //   a.branch_id = value;
     //   // }
     //   // console.log("a data ---->", a);
-    //   this.setState({ newData: a });
+    //   setState({ newData: a });
     // }
   };
 
-  const handleCancel = () => {
-    this.setState({ isModalVisible: false });
-  };
+  // const handleCancel = () => {
+  //   setState({ isModalVisible: false });
+  // };
 
   const handleChange = (e, row, index, name, isPopup) => {
     console.log("row on handlechange running", e, name, index, row);
-    // let name = name;
 
-    // console.log(
-    //   "row on handlechange ",
-    //   row,
-    //   e.target.value,
-    //   name,
-    //   index
-    // );
     let a;
     var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
+    var alphabetsRegex = /^[a-zA-Z ]*$/;
     var numberRegex = /^[0-9.]+$/;
+    var salaryRegex = /^[0-9,]+$/;
+
     if (isPopup === false) {
       // console.log("hub table data");
-      a = employeesTableData;
+      a = setTableData();
 
       switch (name) {
-        case "mandi_name":
-          a[row.key].mandi_name = e.target.value;
-          this.setState({ employeesTableData: a });
-          return;
-        case "Mandi_Min_Buying_MT":
+        case "full_name":
           if (e.target.value === "") {
-            a[row.key].Mandi_Min_Buying_MT = "";
+            a[row.key].full_name = "";
+          } else if (e.target.value.match(alphabetsRegex)) {
+            a[row.key].full_name = e.target.value;
+          }
+          setEmployeesTableData(a);
+          return;
+        case "job_title":
+          if (e.target.value === "") {
+            a[row.key].job_title = "";
+          } else if (e.target.value.match(alphabetsRegex)) {
+            a[row.key].job_title = e.target.value;
+          }
+          a[row.key].job_title = e.target.value;
+          setEmployeesTableData(a);
+          return;
+        case "department":
+          if (e.target.value === "") {
+            a[row.key].department = "";
+          } else if (e.target.value.match(alphabetsRegex)) {
+            a[row.key].department = e.target.value;
+          }
+
+          setEmployeesTableData(a);
+          return;
+        case "location":
+          if (e.target.value === "") {
+            a[row.key].location = "";
+          } else if (e.target.value.match(alphabetsRegex)) {
+            a[row.key].location = e.target.value;
+          }
+
+          setEmployeesTableData(a);
+          return;
+        case "age":
+          if (e.target.value === "") {
+            a[row.key].age = "";
           } else if (e.target.value.match(numberRegex)) {
-            a[row.key].Mandi_Min_Buying_MT = e.target.value;
+            a[row.key].age = e.target.value;
           }
 
-          this.setState({ employeesTableData: a });
+          setEmployeesTableData(a);
           return;
-        case "Surplus_Factor":
+        case "salary":
           if (e.target.value === "") {
-            a[row.key].Surplus_Factor = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a[row.key].Surplus_Factor = e.target.value;
+            a[row.key].salary = "";
+          } else if (e.target.value.match(salaryRegex)) {
+            a[row.key].salary = e.target.value;
           }
-
-          this.setState({ employeesTableData: a });
+          setEmployeesTableData(a);
           return;
-        case "mandi_sap_code":
-          if (e.target.value === "") {
-            a[row.key].mandi_sap_code = "";
-          } else if (e.target.value.match(alphaNumericRegex)) {
-            a[row.key].mandi_sap_code = e.target.value.toUpperCase();
-          }
 
-          this.setState({ employeesTableData: a });
-          return;
-        case "mandi_latitude":
-          if (e.target.value === "") {
-            a[row.key].mandi_latitude = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a[row.key].mandi_latitude = e.target.value;
-          }
-
-          this.setState({ employeesTableData: a });
-          return;
-        case "mandi_longitude":
-          if (e.target.value === "") {
-            a[row.key].mandi_longitude = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a[row.key].mandi_longitude = e.target.value;
-          }
-
-          this.setState({ employeesTableData: a });
-          return;
-        case "Start_Effective_Date":
-          if (
-            !moment(e, "YYYY-MM-DD").isSameOrBefore(
-              moment(a[row.key].End_Effective_Date)
-            ) &&
-            e !== ""
-          ) {
-            a[row.key].Start_Effective_Date = e;
-            a[row.key].End_Effective_Date = e;
-          } else {
-            a[row.key].Start_Effective_Date = undefined;
-          }
-
-          this.setState({ employeesTableData: a });
-          return;
-        case "End_Effective_Date":
-          if (e === "") {
-            a[row.key].End_Effective_Date = undefined;
-          } else {
-            a[row.key].End_Effective_Date = e;
-          }
-
-          this.setState({ employeesTableData: a });
-          return;
         default:
           return "";
       }
 
-      // if (name === "mandi_name") {
-      //   a[row.key].mandi_name = e.target.value;
-      // }
-      // else if (name === "Mandi_Min_Buying_MT") {
-      //   if (e.target.value === "") {
-      //     a[row.key].Mandi_Min_Buying_MT = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a[row.key].Mandi_Min_Buying_MT = e.target.value;
-      //   }
-      // }
-      // else if (name === "Surplus_Factor") {
-      //   if (e.target.value === "") {
-      //     a[row.key].Surplus_Factor = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a[row.key].Surplus_Factor = e.target.value;
-      //   }
-      // }
-      // else if (name === "mandi_sap_code") {
-      //   if (e.target.value === "") {
-      //     a[row.key].mandi_sap_code = "";
-      //   }
-      //   else if (e.target.value.match(alphaNumericRegex)) {
-      //     a[row.key].mandi_sap_code = e.target.value.toUpperCase();
-      //   }
-      // }
-      // else if (name === "mandi_latitude") {
-      //   if (e.target.value === "") {
-      //     a[row.key].mandi_latitude = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a[row.key].mandi_latitude = e.target.value;
-      //   }
-      // }
-      // else if (name === "mandi_longitude") {
-      //   if (e.target.value === "") {
-      //     a[row.key].mandi_longitude = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a[row.key].mandi_longitude = e.target.value;
-      //   }
-      // }
-      // else if (name === "Start_Effective_Date") {
-      //   // console.log("moment(e, YYYY-MM-DD).isSameOrBefore(moment(a[row.key].End_Effective_Date))", moment(e, "YYYY-MM-DD").isSameOrBefore(moment(a[row.key].End_Effective_Date)), "NOT ", !moment(e, "YYYY-MM-DD").isSameOrBefore(moment(a[row.key].End_Effective_Date)));
-      //   if (!moment(e, "YYYY-MM-DD").isSameOrBefore(moment(a[row.key].End_Effective_Date)) && e !== "") {
-      //     a[row.key].Start_Effective_Date = e;
-      //     a[row.key].End_Effective_Date = e;
-      //   }
-      //   else {
-      //     a[row.key].Start_Effective_Date = undefined;
-      //   }
-      // }
-      // else if (name === "End_Effective_Date") {
-      //   if (e === "") {
-      //     a[row.key].End_Effective_Date = undefined;
-      //   }
-      //   else {
-      //     a[row.key].End_Effective_Date = e;
-      //   }
-      // }
-      // console.log("Data modified", a, a[row.key].Start_Effective_Date, a[row.key].End_Effective_Date);
-      // this.setState({ employeesTableData: a });
-    } else {
+    }
+    else {
       // console.log("new data ");
-      a = this.state.newData;
+      // a = state.newData;
 
       // if (name === "mandi_name") {
       //   a.mandi_name = e.target.value;
@@ -982,102 +771,102 @@ const EmployeesTable = (props) => {
       //   // }
       // }
 
-      switch (name) {
-        case "mandi_name":
-          a.mandi_name = e.target.value;
-          this.setState({ newData: a });
-          return;
-        case "Mandi_Min_Buying_MT":
-          if (e.target.value === "") {
-            a.Mandi_Min_Buying_MT = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a.Mandi_Min_Buying_MT = e.target.value;
-          }
+      // switch (name) {
+      //   case "mandi_name":
+      //     a.mandi_name = e.target.value;
+      //     setState({ newData: a });
+      //     return;
+      //   case "Mandi_Min_Buying_MT":
+      //     if (e.target.value === "") {
+      //       a.Mandi_Min_Buying_MT = "";
+      //     } else if (e.target.value.match(numberRegex)) {
+      //       a.Mandi_Min_Buying_MT = e.target.value;
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        case "Surplus_Factor":
-          if (e.target.value === "") {
-            a.Surplus_Factor = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a.Surplus_Factor = e.target.value;
-          }
+      //     setState({ newData: a });
+      //     return;
+      //   case "Surplus_Factor":
+      //     if (e.target.value === "") {
+      //       a.Surplus_Factor = "";
+      //     } else if (e.target.value.match(numberRegex)) {
+      //       a.Surplus_Factor = e.target.value;
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        case "mandi_sap_code":
-          if (e.target.value === "") {
-            a.mandi_sap_code = "";
-          } else if (e.target.value.match(alphaNumericRegex)) {
-            a.mandi_sap_code = e.target.value.toUpperCase();
-          }
+      //     setState({ newData: a });
+      //     return;
+      //   case "mandi_sap_code":
+      //     if (e.target.value === "") {
+      //       a.mandi_sap_code = "";
+      //     } else if (e.target.value.match(alphaNumericRegex)) {
+      //       a.mandi_sap_code = e.target.value.toUpperCase();
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        case "mandi_latitude":
-          if (e.target.value === "") {
-            a.mandi_latitude = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a.mandi_latitude = e.target.value;
-          }
+      //     setState({ newData: a });
+      //     return;
+      //   case "mandi_latitude":
+      //     if (e.target.value === "") {
+      //       a.mandi_latitude = "";
+      //     } else if (e.target.value.match(numberRegex)) {
+      //       a.mandi_latitude = e.target.value;
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        case "mandi_longitude":
-          if (e.target.value === "") {
-            a.mandi_longitude = "";
-          } else if (e.target.value.match(numberRegex)) {
-            a.mandi_longitude = e.target.value;
-          }
+      //     setState({ newData: a });
+      //     return;
+      //   case "mandi_longitude":
+      //     if (e.target.value === "") {
+      //       a.mandi_longitude = "";
+      //     } else if (e.target.value.match(numberRegex)) {
+      //       a.mandi_longitude = e.target.value;
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        case "Start_Effective_Date":
-          if (
-            !moment(e, "YYYY-MM-DD").isSameOrBefore(
-              moment(a[row.key].End_Effective_Date)
-            ) &&
-            e !== ""
-          ) {
-            a.Start_Effective_Date = e;
-            a.End_Effective_Date = e;
-          } else {
-            a.Start_Effective_Date = undefined;
-          }
+      //     setState({ newData: a });
+      //     return;
+      //   case "Start_Effective_Date":
+      //     if (
+      //       !moment(e, "YYYY-MM-DD").isSameOrBefore(
+      //         moment(a[row.key].End_Effective_Date)
+      //       ) &&
+      //       e !== ""
+      //     ) {
+      //       a.Start_Effective_Date = e;
+      //       a.End_Effective_Date = e;
+      //     } else {
+      //       a.Start_Effective_Date = undefined;
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        case "End_Effective_Date":
-          if (e === "") {
-            a.End_Effective_Date = undefined;
-          } else {
-            a.End_Effective_Date = e;
-          }
+      //     setState({ newData: a });
+      //     return;
+      //   case "End_Effective_Date":
+      //     if (e === "") {
+      //       a.End_Effective_Date = undefined;
+      //     } else {
+      //       a.End_Effective_Date = e;
+      //     }
 
-          this.setState({ newData: a });
-          return;
-        default:
-          return "";
-      }
-      // this.setState({ newData: a });
+      //     setState({ newData: a });
+      //     return;
+      //   default:
+      //     return "";
+      // }
+      // setState({ newData: a });
     }
   };
 
-  const disabledDate = (current, rowData, text) => {
-    // Can not select days before today and today
-    // return current && current > moment().endOf("day");
-    console.log("Current", current, rowData, text);
-    // if (text !== "new")
-    return (
-      current && current > moment(rowData.Start_Effective_Date, "YYYY-MM-DD")
-    );
-    // else
-    //   return current && current > newData.Start_Effective_Date;
-  };
+  // const disabledDate = (current, rowData, text) => {
+  //   // Can not select days before today and today
+  //   // return current && current > moment().endOf("day");
+  //   console.log("Current", current, rowData, text);
+  //   // if (text !== "new")
+  //   return (
+  //     current && current > moment(rowData.Start_Effective_Date, "YYYY-MM-DD")
+  //   );
+  //   // else
+  //   //   return current && current > newData.Start_Effective_Date;
+  // };
 
   const handleEditClick = (row, index) => {
     // console.log("RowData", row, index);
-    let tempData = employeesTableData.map((item) => {
+    let tempData = setTableData().map((item) => {
       if (item.id === row.id) {
         return {
           ...item,
@@ -1096,7 +885,7 @@ const EmployeesTable = (props) => {
   };
 
   const handleCancelClick = (row, index) => {
-    let tempData = employeesTableData.map((item) => {
+    let tempData = setTableData().map((item) => {
       if (item.id === row.id) {
         return rowData;
       } else {
@@ -1107,7 +896,6 @@ const EmployeesTable = (props) => {
   };
 
   function showPromiseConfirm(row, index) {
-    setDeleteRowData(row);
     confirm({
       title: "Delete Employee Details",
       icon: <ExclamationCircleOutlined />,
@@ -1122,10 +910,8 @@ const EmployeesTable = (props) => {
   }
 
   const handleDeleteClick = (row, index) => {
-    setConfirmationModalVisible(true);
-    let tempData = employeesTableData.filter((item) => item.id !== row.id);
+    let tempData = setTableData().filter((item) => item.id !== row.id);
     setEmployeesTableData(tempData);
-    setConfirmationModalVisible(false);
   }
 
   const handleDepartmentSelect = (value, props) => {
@@ -1148,7 +934,7 @@ const EmployeesTable = (props) => {
   };
 
   useEffect(() => {
-    buildChart();
+    isTable && buildChart();
   }, [])
 
   /**
@@ -1201,136 +987,476 @@ const EmployeesTable = (props) => {
       className="employee-table"
       style={{ height: window.innerHeight - 85, marginTop: "0px" }}
     >
-      <div className="info-container">
-        <div className="piechart-info">
-          <div className="title">Departments</div>
-          <div className="details">
-            <canvas id="myChartPie" width="320" height="320"></canvas>
-          </div>
-        </div>
-        <div className="department-info">
-          <div className="title">Employees</div>
-          <div className="details">
-            {employeeDetails && employeeDetails.length && employeeDetails.map(item => {
-              return <div className="info-wrapper">
-                <div className="employees-number">{item.value}</div>
-                <div className="employees-department">{item.department}</div>
+      {isTable ?
+        <>
+          <div className="info-container">
+            <div className="piechart-info">
+              <div className="title">Departments</div>
+              <div className="details">
+                <canvas id="myChartPie" width="320" height="320"></canvas>
               </div>
-            })}
+            </div>
+            <div className="department-info">
+              <div className="title">Employees</div>
+              <div className="details">
+                {employeeDetails && employeeDetails.length && employeeDetails.map(item => {
+                  return <div className="info-wrapper">
+                    <div className="employees-number">{item.value}</div>
+                    <div className="employees-department">{item.department}</div>
+                  </div>
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="top-container">
-        <div className="hub-region-filter">
-          <span
-            style={{
-              fontSize: "18px",
-              marginTop: "-10px",
-              fontWeight: "600",
-            }}
-          >
-            List of Employees&nbsp;
+          <div className="top-container">
+            <div className="hub-region-filter">
+              <span
+                style={{
+                  fontSize: "18px",
+                  marginTop: "-10px",
+                  fontWeight: "600",
+                }}
+              >
+                List of Employees&nbsp;
             </span>{" "}
-          <Select
-            // disabled={!this.state.isAdd}
-            allowClear
-            showSearch
-            optionFilterProp="children"
-            className={"select-master-region"}
-            mode="single"
-            placeholder="Department"
-            value={departmentSelected}
-            onChange={(value, props) => handleDepartmentSelect(value, props)}
-          >
-            {departmentList !== null &&
-              departmentList.length &&
-              departmentList.map((item, idx) => (
-                <Option value={item.value} key={item.value}>
-                  {item.text}
-                </Option>
-              ))}
-          </Select>
-          <Select
-            // disabled={!this.state.isAdd}
-            allowClear
-            showSearch
-            optionFilterProp="children"
-            className={"select-master-region"}
-            mode="single"
-            placeholder="Location"
-            value={locationSelected}
-            onChange={(value, props) => handleLocationSelect(value, props)}
-          >
-            {locationList !== null &&
-              locationList.length &&
-              locationList.map((item, idx) => (
-                <Option value={item.value} key={item.value}>
-                  {item.text}
-                </Option>
-              ))}
-          </Select>
-          <Select
-            // disabled={!this.state.isAdd}
-            allowClear
-            showSearch
-            optionFilterProp="children"
-            className={"select-master-region"}
-            mode="single"
-            placeholder="Age"
-            value={ageSelected}
-            onChange={(value, props) => handleAgeSelect(value, props)}
-          >
-            {ageList !== null &&
-              ageList.length &&
-              ageList.map((item, idx) => (
-                <Option value={item.value} key={item.value}>
-                  {item.text}
-                </Option>
-              ))}
-          </Select>
+              <Select
+                // disabled={!state.isAdd}
+                allowClear
+                showSearch
+                optionFilterProp="children"
+                className={"select-master-region"}
+                mode="single"
+                placeholder="Department"
+                value={departmentSelected}
+                onChange={(value, props) => handleDepartmentSelect(value, props)}
+              >
+                {departmentList !== null &&
+                  departmentList.length &&
+                  departmentList.map((item, idx) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.text}
+                    </Option>
+                  ))}
+              </Select>
+              <Select
+                // disabled={!state.isAdd}
+                allowClear
+                showSearch
+                optionFilterProp="children"
+                className={"select-master-region"}
+                mode="single"
+                placeholder="Location"
+                value={locationSelected}
+                onChange={(value, props) => handleLocationSelect(value, props)}
+              >
+                {locationList !== null &&
+                  locationList.length &&
+                  locationList.map((item, idx) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.text}
+                    </Option>
+                  ))}
+              </Select>
+              <Select
+                // disabled={!state.isAdd}
+                allowClear
+                showSearch
+                optionFilterProp="children"
+                className={"select-master-region"}
+                mode="single"
+                placeholder="Age"
+                value={ageSelected}
+                onChange={(value, props) => handleAgeSelect(value, props)}
+              >
+                {ageList !== null &&
+                  ageList.length &&
+                  ageList.map((item, idx) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.text}
+                    </Option>
+                  ))}
+              </Select>
 
-        </div>
+            </div>
 
-        <div
-          style={{
-            width: "30%",
-            display: "inline-flex",
-            // flexDirection: "row-reverse",
-            // placeItems: "flex-end",
-            // marginRight: "25px",
-            // marginBottom: "10px",
-          }}
-        >
-          <Search
-            placeholder="Search"
-            allowClear
-            onChange={(e) => setSearchText(e.target.value)}
-            style={{ width: "45%", borderRadius: 10 }}
-          />
-          <Button
-            className="add-master-button"
-            style={{
-              height: "32px",
-              width: "70px",
-              backgroundColor: "#0b133d",
-              borderRadius: 10,
-              color: "white",
-              marginLeft: 5
-            }}
-            onClick={() => history.push("/createemployee")}
-          >
-            &#10010; Add
+            <div
+              style={{
+                width: "30%",
+                display: "inline-flex",
+                // flexDirection: "row-reverse",
+                // placeItems: "flex-end",
+                // marginRight: "25px",
+                // marginBottom: "10px",
+              }}
+            >
+              <Search
+                placeholder="Search"
+                allowClear
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: "45%", borderRadius: 10 }}
+              />
+              <Button
+                className="add-master-button"
+                style={{
+                  height: "32px",
+                  width: "70px",
+                  backgroundColor: "#0b133d",
+                  borderRadius: 10,
+                  color: "white",
+                  marginLeft: 5
+                }}
+                onClick={() => history.push("/createemployee")}
+              >
+                &#10010; Add
             </Button>
-        </div>
-      </div>
+            </div>
+          </div>
 
-      <Spin
-        spinning={isSpinnerOnLoad}
-        size={"large"}
-        tip="Loading..."
-        style={{ alignSelf: "center", zIndex: 9999, marginTop: "20px" }}
-      >
-        <> {/* <Modal
+          <Spin
+            spinning={isSpinnerOnLoad}
+            size={"large"}
+            tip="Loading..."
+            style={{ alignSelf: "center", zIndex: 9999, marginTop: "20px" }}
+          >
+            <div
+              className="table-container1"
+              style={{ width: "100%", margin: "10px 0px" }}
+            >
+              <Table
+                {...userTableProps}
+                columns={[
+                  {
+                    key: "full_name",
+                    title: "Full Name",
+                    dataIndex: "full_name",
+                    width: 155,
+                    // filters: createFilters("mandi_name"),
+                    // onFilter: (value, record) =>
+                    //   record.mandi_name.includes(value),
+                    // sortDirections: ["descend", "ascend"],
+                    // sorter: (a, b) => a.mandi_name.localeCompare(b.mandi_name),
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ marginLeft: "0px" }}>
+                            <Input
+                              style={{ marginRight: "2px" }}
+                              maxLength={100}
+                              disabled={!rowRecord.isEdit}
+                              // disabled={true}
+                              value={rowRecord.full_name}
+                              name="full_name"
+                              onChange={(e) =>
+                                handleChange(
+                                  e,
+                                  rowRecord,
+                                  index,
+                                  "full_name",
+                                  false
+                                )
+                              }
+                            />
+                          </div>
+                        </>
+                      );
+                    },
+                  },
+                  {
+                    title: "Job title",
+                    dataIndex: "job_title",
+                    key: "job_title",
+                    width: 160,
+                    // filters: createFilters("job_title"),
+                    // onFilter: (value, record) => record.job_title.includes(value),
+                    // sortDirections: ["descend", "ascend"],
+                    // sorter: (a, b) => a.job_title.localeCompare(b.job_title),
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ marginLeft: "0px" }}>
+                            <Input
+                              style={{ marginRight: "2px" }}
+                              maxLength={100}
+                              disabled={!rowRecord.isEdit}
+                              // disabled={true}
+                              value={rowRecord.job_title}
+                              name="job_title"
+                              onChange={(e) =>
+                                handleChange(
+                                  e,
+                                  rowRecord,
+                                  index,
+                                  "job_title",
+                                  false
+                                )
+                              }
+                            />
+                          </div>
+                          {/* <div
+                        style={{ marginLeft: "-15px", marginRight: "-10px" }}
+                      >
+                        <Select
+                          className="remarks-select"
+                          showSearch
+                          optionFilterProp="children"
+                          disabled={!rowRecord.isEdit}
+                          name="job_title"
+                          defaultValue={rowRecord.job_title}
+                          value={rowRecord.job_title}
+                          onSelect={(value, option) =>
+                            handleDropdownChange(
+                              value,
+                              rowRecord,
+                              "job_title",
+                              index,
+                              option.props.children,
+                              false
+                            )
+                          }
+                        >
+                          {state.primaryHubList &&
+                            state.primaryHubList.length &&
+                            state.primaryHubList.map((hubItem, idx) => (
+                              <Option
+                                key={hubItem.territory_id}
+                                value={hubItem.territory_id}
+                              >
+                                {hubItem.territory_name}
+                              </Option>
+                            ))}
+                        </Select>
+                      </div> */}
+                        </>
+                      );
+                    },
+                  },
+                  {
+                    title: "Department",
+                    dataIndex: "department",
+                    key: "department",
+                    width: 160,
+                    // filters: createFilters("region_name"),
+                    // onFilter: (value, record) =>
+                    //   record.region_name.includes(value),
+                    // sortDirections: ["descend", "ascend"],
+                    // sorter: (a, b) => a.region_name.localeCompare(b.region_name),
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ marginLeft: "0px" }}>
+                            <Input
+                              style={{ marginRight: "2px" }}
+                              maxLength={100}
+                              disabled={!rowRecord.isEdit}
+                              // disabled={true}
+                              value={rowRecord.department}
+                              name="department"
+                              onChange={(e) =>
+                                handleChange(
+                                  e,
+                                  rowRecord,
+                                  index,
+                                  "department",
+                                  false
+                                )
+                              }
+                            />
+                          </div>
+                        </>
+                      );
+                    },
+                  },
+                  {
+                    title: "Location",
+                    dataIndex: "location",
+                    key: "location",
+                    width: 140,
+                    // filters: createFilters("hub_region"),
+                    // onFilter: (value, record) =>
+                    //   record.hub_region.includes(value),
+                    // sortDirections: ["descend", "ascend"],
+                    // sorter: (a, b) => a.hub_region.localeCompare(b.hub_region),
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ marginLeft: "0px" }}>
+                            <Input
+                              style={{ marginRight: "2px" }}
+                              maxLength={100}
+                              disabled={!rowRecord.isEdit}
+                              // disabled={true}
+                              value={rowRecord.location}
+                              name="location"
+                              onChange={(e) =>
+                                handleChange(
+                                  e,
+                                  rowRecord,
+                                  index,
+                                  "location",
+                                  false
+                                )
+                              }
+                            />
+                          </div>
+                        </>
+                      );
+                    },
+                  },
+                  {
+                    title: "Age",
+                    dataIndex: "age",
+                    key: "age",
+                    width: 130,
+                    // filters: createFilters("branch_name"),
+                    // onFilter: (value, record) =>
+                    //   record.branch_name.includes(value),
+                    // sortDirections: ["descend", "ascend"],
+                    // sorter: (a, b) => a.branch_name.localeCompare(b.branch_name),
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ marginLeft: "0px" }}>
+                            <Input
+                              style={{ marginRight: "2px" }}
+                              maxLength={100}
+                              disabled={!rowRecord.isEdit}
+                              // disabled={true}
+                              value={rowRecord.age}
+                              name="age"
+                              onChange={(e) =>
+                                handleChange(
+                                  e,
+                                  rowRecord,
+                                  index,
+                                  "age",
+                                  false
+                                )
+                              }
+                            />
+                          </div>
+                        </>
+                      );
+                    },
+                  },
+                  {
+                    key: "salary",
+                    title: "Salary",
+                    dataIndex: "salary",
+                    width: 140,
+                    // sortDirections: ["descend", "ascend"],
+                    // sorter: (a, b) =>
+                    //   a.Mandi_Min_Buying_MT - b.Mandi_Min_Buying_MT,
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ marginLeft: "0px" }}>
+                            <Input
+                              style={{ marginRight: "2px" }}
+                              disabled={!rowRecord.isEdit}
+                              maxLength={100}
+                              value={rowRecord.salary}
+                              name="salary"
+                              onChange={(e) =>
+                                handleChange(
+                                  e,
+                                  rowRecord,
+                                  index,
+                                  "salary",
+                                  false
+                                )
+                              }
+                            />
+                          </div>
+                        </>
+                      );
+                    },
+                  },
+                  {
+                    title: "Action",
+                    dataIndex: "Submit",
+                    key: "Submit",
+                    width: 140,
+                    render: (record, rowRecord, index) => {
+                      return (
+                        <>
+                          <div style={{ display: "inline-flex", width: "100%" }}>
+                            <Button
+                              className={
+                                rowRecord.surplus_deficit <= 0
+                                  ? "disable-edit-btn"
+                                  : "edit-btn"
+                              }
+                              type="primary"
+                              size={"small"}
+                              style={{
+                                marginLeft: 5,
+                                alignSelf: "center",
+                                color: "white",
+                                borderRadius: 15,
+                                padding: "0px 0px 2px",
+                                height: 31,
+                                backgroundColor: "#20346a",
+                              }}
+                              block
+                              htmlType="submit"
+                              // disabled={state.isSubmitted}
+                              onClick={() =>
+                                rowRecord.isEdit
+                                  ? submitTableRowData(rowRecord)
+                                  : handleEditClick(rowRecord, index)
+                              }
+                            >
+                              {rowRecord.isEdit ? "Submit" : "Edit"}
+                            </Button>
+
+                            <Button
+                              className={
+                                !rowRecord.isEdit
+                                  ? "deleteBtnClass"
+                                  : "btnClass"
+                              }
+                              type="primary"
+                              size={"small"}
+                              style={{
+                                marginLeft: 5,
+                                alignSelf: "center",
+                                color: "white",
+                                borderRadius: 15,
+                                padding: "0px 0px 2px",
+                                height: 31,
+                                backgroundColor: "#20346a",
+                              }}
+                              block
+                              htmlType="submit"
+                              // disabled={!rowRecord.isEdit}
+                              onClick={() =>
+                                rowRecord.isEdit
+                                  ? handleCancelClick(rowRecord, index)
+                                  : showPromiseConfirm(rowRecord, index)
+                              }
+                            >
+                              {rowRecord.isEdit ? "Cancel" : "Delete"}
+                            </Button>
+                          </div>
+                        </>
+                      );
+                    },
+                  },
+                ]}
+                dataSource={setTableData()}
+              // dataSource={employeesTableData}
+              />
+            </div>
+          </Spin>
+        </>
+        : <div>
+          <div className="form-header">
+            <div className="title"> Create Employee </div>
+            <div className="save"> Save </div>
+            <div className="create-submit"> CREATE EMPLOYEES </div>
+          </div>
+          <div className="form">
+            <> {/* <Modal
           className="add-master-modal"
           title={"Add Mandi"}
           footer={false}
@@ -1339,16 +1465,16 @@ const EmployeesTable = (props) => {
           //   height: "400px",
           // }}
           // visible={true}
-          visible={this.state.isModalVisible}
+          visible={state.isModalVisible}
           destroyOnClose={true}
-          onCancel={this.handleCancel}
+          onCancel={handleCancel}
         >
           <div className="master-form-container">
             <Form
               layout="horizontal"
               //   onValuesChange={onFormLayoutChange}
               size={"small"}
-            // onSubmit={submitTableRowData(this.state.newData)}
+            // onSubmit={submitTableRowData(state.newData)}
             >
               <div>
                 <div
@@ -1364,12 +1490,12 @@ const EmployeesTable = (props) => {
                       style={{ marginRight: "2px" }}
                       maxLength={100}
                       required
-                      value={this.state.newData.mandi_name}
+                      value={state.newData.mandi_name}
                       name="mandi_name"
                       onChange={(e) =>
-                        this.handleChange(
+                        handleChange(
                           e,
-                          this.state.newData,
+                          state.newData,
                           -0,
                           "mandi_name",
                           true
@@ -1394,11 +1520,11 @@ const EmployeesTable = (props) => {
                       optionFilterProp="children"
                       name="hub_name"
                       required
-                      value={this.state.newData.hub_name}
+                      value={state.newData.hub_name}
                       onSelect={(value, option) =>
-                        this.handleDropdownChange(
+                        handleDropdownChange(
                           value,
-                          this.state.newData,
+                          state.newData,
                           "hub_name",
                           -0,
                           option.props.children,
@@ -1406,9 +1532,9 @@ const EmployeesTable = (props) => {
                         )
                       }
                     >
-                      {this.state.primaryHubList &&
-                        this.state.primaryHubList.length &&
-                        this.state.primaryHubList.map((hubItem, idx) => (
+                      {state.primaryHubList &&
+                        state.primaryHubList.length &&
+                        state.primaryHubList.map((hubItem, idx) => (
                           <Option
                             key={hubItem.territory_id}
                             value={hubItem.territory_id}
@@ -1430,11 +1556,11 @@ const EmployeesTable = (props) => {
                       optionFilterProp="children"
                       name="region_name"
                       required
-                      value={this.state.newData.region_name}
+                      value={state.newData.region_name}
                       onSelect={(value, option) =>
-                        this.handleDropdownChange(
+                        handleDropdownChange(
                           value,
-                          this.state.newData,
+                          state.newData,
                           "region_name",
                           -0,
                           option.props.children,
@@ -1442,9 +1568,9 @@ const EmployeesTable = (props) => {
                         )
                       }
                     >
-                      {this.state.mandiRegionList &&
-                        this.state.mandiRegionList.length &&
-                        this.state.mandiRegionList.map(
+                      {state.mandiRegionList &&
+                        state.mandiRegionList.length &&
+                        state.mandiRegionList.map(
                           (mandiRegionItem, idx) => (
                             <Option
                               key={mandiRegionItem.region_id}
@@ -1458,8 +1584,8 @@ const EmployeesTable = (props) => {
                   </Form.Item>
                 </div>
               </div>
-              {this.state.newData.hub_region !== "" &&
-                this.state.newData.branch_name !== "" ? (
+              {state.newData.hub_region !== "" &&
+                state.newData.branch_name !== "" ? (
                   <div>
                     <div
                       className="left"
@@ -1470,14 +1596,14 @@ const EmployeesTable = (props) => {
                       }}
                     >
                       <span style={{ color: "black" }}>Hub Region:</span>{" "}
-                      <b>{this.state.newData.hub_region}</b>
+                      <b>{state.newData.hub_region}</b>
                     </div>
                     <div
                       className="right"
                       style={{ display: "inline-block", width: "45%" }}
                     >
                       <span style={{ color: "black" }}>Hub Branch:</span>{" "}
-                      <b>{this.state.newData.branch_name}</b>
+                      <b>{state.newData.branch_name}</b>
                     </div>
                   </div>
                 ) : null}
@@ -1495,12 +1621,12 @@ const EmployeesTable = (props) => {
                     <Input
                       style={{ marginRight: "2px" }}
                       maxLength={100}
-                      value={this.state.newData.Mandi_Min_Buying_MT}
+                      value={state.newData.Mandi_Min_Buying_MT}
                       name="Mandi_Min_Buying_MT"
                       onChange={(e) =>
-                        this.handleChange(
+                        handleChange(
                           e,
-                          this.state.newData,
+                          state.newData,
                           -0,
                           "Mandi_Min_Buying_MT"
                         )
@@ -1521,12 +1647,12 @@ const EmployeesTable = (props) => {
                     <Input
                       style={{ marginRight: "2px" }}
                       maxLength={100}
-                      value={this.state.newData.Surplus_Factor}
+                      value={state.newData.Surplus_Factor}
                       name="Surplus_Factor"
                       onChange={(e) =>
-                        this.handleChange(
+                        handleChange(
                           e,
-                          this.state.newData,
+                          state.newData,
                           -0,
                           "Surplus_Factor",
                           true
@@ -1544,12 +1670,12 @@ const EmployeesTable = (props) => {
                     <Input
                       style={{ marginRight: "2px" }}
                       maxLength={100}
-                      value={this.state.newData.mandi_sap_code}
+                      value={state.newData.mandi_sap_code}
                       name="mandi_sap_code"
                       onChange={(e) =>
-                        this.handleChange(
+                        handleChange(
                           e,
-                          this.state.newData,
+                          state.newData,
                           -0,
                           "mandi_sap_code",
                           true
@@ -1571,12 +1697,12 @@ const EmployeesTable = (props) => {
                     <Input
                       style={{ marginRight: "2px" }}
                       maxLength={100}
-                      value={this.state.newData.mandi_latitude}
+                      value={state.newData.mandi_latitude}
                       name="mandi_latitude"
                       onChange={(e) =>
-                        this.handleChange(
+                        handleChange(
                           e,
-                          this.state.newData,
+                          state.newData,
                           -0,
                           "mandi_latitude",
                           true
@@ -1597,12 +1723,12 @@ const EmployeesTable = (props) => {
                     <Input
                       style={{ marginRight: "2px" }}
                       maxLength={100}
-                      value={this.state.newData.mandi_longitude}
+                      value={state.newData.mandi_longitude}
                       name="mandi_longitude"
                       onChange={(e) =>
-                        this.handleChange(
+                        handleChange(
                           e,
-                          this.state.newData,
+                          state.newData,
                           -0,
                           "mandi_longitude",
                           true
@@ -1622,13 +1748,13 @@ const EmployeesTable = (props) => {
                 //       // }
                 //       format="YYYY-MM-DD"
                 //       placeholder="Start Date"
-                //       defaultValue={this.state.newData.Start_Effective_Date === null || this.state.newData.Start_Effective_Date === undefined ? undefined : moment(this.state.newData.Start_Effective_Date, "YYYY-MM-DD")}
+                //       defaultValue={state.newData.Start_Effective_Date === null || state.newData.Start_Effective_Date === undefined ? undefined : moment(state.newData.Start_Effective_Date, "YYYY-MM-DD")}
                 //       // value={
-                //       //   this.state.newData.Start_Effective_Date !== null || this.state.newData.Start_Effective_Date !== "" || this.state.newData.Start_Effective_Date !== undefined
-                //       //     ? moment(this.state.newData.Start_Effective_Date, "YYYY-MM-DD")
+                //       //   state.newData.Start_Effective_Date !== null || state.newData.Start_Effective_Date !== "" || state.newData.Start_Effective_Date !== undefined
+                //       //     ? moment(state.newData.Start_Effective_Date, "YYYY-MM-DD")
                 //       //     : undefined
                 //       // }
-                //       onChange={(value, date) => this.handleChange(date, this.state.newData, -0, "Start_Effective_Date", true)
+                //       onChange={(value, date) => handleChange(date, state.newData, -0, "Start_Effective_Date", true)
                 //       }
                 //     // disabledDate={disabledDate}
                 //     />
@@ -1641,16 +1767,16 @@ const EmployeesTable = (props) => {
                 //       // disabled={
                 //       //   !canEnableTextBox("1", statutoryDetails.registered_VAT)
                 //       // }
-                //       defaultValue={this.state.newData.End_Effective_Date === null || this.state.newData.End_Effective_Date === undefined ? undefined : moment(this.state.newData.End_Effective_Date, "YYYY-MM-DD")}
+                //       defaultValue={state.newData.End_Effective_Date === null || state.newData.End_Effective_Date === undefined ? undefined : moment(state.newData.End_Effective_Date, "YYYY-MM-DD")}
                 //       // value={
-                //       //   this.state.newData.End_Effective_Date !== null || this.state.newData.End_Effective_Date !== "" || this.state.newData.End_Effective_Date !== undefined
-                //       //     ? moment(this.state.newData.End_Effective_Date, "YYYY-MM-DD")
+                //       //   state.newData.End_Effective_Date !== null || state.newData.End_Effective_Date !== "" || state.newData.End_Effective_Date !== undefined
+                //       //     ? moment(state.newData.End_Effective_Date, "YYYY-MM-DD")
                 //       //     : undefined
                 //       // }
-                //       onChange={(value, date) => this.handleChange(date, this.state.newData, -0, "End_Effective_Date", true)
+                //       onChange={(value, date) => handleChange(date, state.newData, -0, "End_Effective_Date", true)
                 //       }
-                //       // disabledDate={this.disabledDate(this.state.newData, "new")}
-                //       disabledDate={d => !d || d.isSameOrBefore(this.state.newData.Start_Effective_Date)}
+                //       // disabledDate={disabledDate(state.newData, "new")}
+                //       disabledDate={d => !d || d.isSameOrBefore(state.newData.Start_Effective_Date)}
                 //     />
                 //   </div>
               // </div> //================
@@ -1661,14 +1787,14 @@ const EmployeesTable = (props) => {
                 <Form.Item label="Mandi Priority">
                   {/* <Select
                       value={
-                        this.state.newData.is_priority_mandi === true ? "Yes" : "No"
+                        state.newData.is_priority_mandi === true ? "Yes" : "No"
                       }
                       showSearch
                     optionFilterProp="children"
                       onChange={(value, option) =>
-                        this.handleDropdownChange(
+                        handleDropdownChange(
                           value,
-                          this.state.newData,
+                          state.newData,
                           "is_priority_mandi",
                           -0,
                           option.props.children,
@@ -1695,12 +1821,12 @@ const EmployeesTable = (props) => {
                     </Select> //================
                   <Radio.Group
                     name="is_priority_mandi"
-                    value={this.state.newData.is_priority_mandi ? 1 : 0}
+                    value={state.newData.is_priority_mandi ? 1 : 0}
                     required
                     onChange={(e, option) =>
-                      this.handleDropdownChange(
+                      handleDropdownChange(
                         e.target.value,
-                        this.state.newData,
+                        state.newData,
                         "is_priority_mandi",
                         -0,
                         "",
@@ -1721,14 +1847,14 @@ const EmployeesTable = (props) => {
                 <Form.Item label="Main Mandi">
                   {/* <Select
                       value={
-                        this.state.newData.is_main_mandi === true ? "Yes" : "No"
+                        state.newData.is_main_mandi === true ? "Yes" : "No"
                       }
                       showSearch
                     optionFilterProp="children"
                       onChange={(value, option) =>
-                        this.handleDropdownChange(
+                        handleDropdownChange(
                           value,
-                          this.state.newData,
+                          state.newData,
                           "is_main_mandi",
                           -0,
                           option.props.children,
@@ -1752,12 +1878,12 @@ const EmployeesTable = (props) => {
                     </Select> //================
                   <Radio.Group
                     name="is_main_mandi"
-                    value={this.state.newData.is_main_mandi ? 1 : 0}
+                    value={state.newData.is_main_mandi ? 1 : 0}
                     required
                     onChange={(e, option) =>
-                      this.handleDropdownChange(
+                      handleDropdownChange(
                         e.target.value,
-                        this.state.newData,
+                        state.newData,
                         "is_main_mandi",
                         -0,
                         "",
@@ -1778,14 +1904,14 @@ const EmployeesTable = (props) => {
                 <Form.Item label="Active">
                   {/* <Select
                       value={
-                        this.state.newData.is_active === true ? "Yes" : "No"
+                        state.newData.is_active === true ? "Yes" : "No"
                       }
                       showSearch
                     optionFilterProp="children"
                       onChange={(value, option) =>
-                        this.handleDropdownChange(
+                        handleDropdownChange(
                           value,
-                          this.state.newData,
+                          state.newData,
                           "is_active",
                           -0,
                           option.props.children,
@@ -1810,11 +1936,11 @@ const EmployeesTable = (props) => {
                   <Radio.Group
                     name="is_active"
                     required
-                    value={this.state.newData.is_active ? 1 : 0}
+                    value={state.newData.is_active ? 1 : 0}
                     onChange={(e, option) =>
-                      this.handleDropdownChange(
+                      handleDropdownChange(
                         e.target.value,
-                        this.state.newData,
+                        state.newData,
                         "is_active",
                         -0,
                         "",
@@ -1833,10 +1959,10 @@ const EmployeesTable = (props) => {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    disabled={this.state.isSubmitted}
+                    disabled={state.isSubmitted}
                     onClick={() => {
-                      // this.setState({isSubmitted:false})
-                      this.submitTableRowData(this.state.newData);
+                      // setState({isSubmitted:false})
+                      submitTableRowData(state.newData);
                     }}
                   >
                     Submit
@@ -1846,337 +1972,121 @@ const EmployeesTable = (props) => {
             </Form>
           </div>
         </Modal> */}
-        </>
-        <div
-          className="table-container1"
-          style={{ width: "100%", margin: "10px 0px" }}
-        >
-          <Table
-            {...userTableProps}
-            columns={[
-              {
-                key: "full_name",
-                title: "Full Name",
-                dataIndex: "full_name",
-                width: 155,
-                // filters: this.createFilters("mandi_name"),
-                // onFilter: (value, record) =>
-                //   record.mandi_name.includes(value),
-                // sortDirections: ["descend", "ascend"],
-                // sorter: (a, b) => a.mandi_name.localeCompare(b.mandi_name),
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ marginLeft: "0px" }}>
-                        <Input
-                          style={{ marginRight: "2px" }}
-                          maxLength={100}
-                          disabled={!rowRecord.isEdit}
-                          // disabled={true}
-                          value={rowRecord.full_name}
-                          name="full_name"
-                          onChange={(e) =>
-                            this.handleChange(
-                              e,
-                              rowRecord,
-                              index,
-                              "full_name",
-                              false
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  );
-                },
-              },
-              {
-                title: "Job title",
-                dataIndex: "job_title",
-                key: "job_title",
-                width: 160,
-                // filters: this.createFilters("job_title"),
-                // onFilter: (value, record) => record.job_title.includes(value),
-                // sortDirections: ["descend", "ascend"],
-                // sorter: (a, b) => a.job_title.localeCompare(b.job_title),
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ marginLeft: "0px" }}>
-                        <Input
-                          style={{ marginRight: "2px" }}
-                          maxLength={100}
-                          disabled={!rowRecord.isEdit}
-                          // disabled={true}
-                          value={rowRecord.job_title}
-                          name="job_title"
-                          onChange={(e) =>
-                            this.handleChange(
-                              e,
-                              rowRecord,
-                              index,
-                              "job_title",
-                              false
-                            )
-                          }
-                        />
-                      </div>
-                      {/* <div
-                        style={{ marginLeft: "-15px", marginRight: "-10px" }}
-                      >
-                        <Select
-                          className="remarks-select"
-                          showSearch
-                          optionFilterProp="children"
-                          disabled={!rowRecord.isEdit}
-                          name="job_title"
-                          defaultValue={rowRecord.job_title}
-                          value={rowRecord.job_title}
-                          onSelect={(value, option) =>
-                            this.handleDropdownChange(
-                              value,
-                              rowRecord,
-                              "job_title",
-                              index,
-                              option.props.children,
-                              false
-                            )
-                          }
-                        >
-                          {this.state.primaryHubList &&
-                            this.state.primaryHubList.length &&
-                            this.state.primaryHubList.map((hubItem, idx) => (
-                              <Option
-                                key={hubItem.territory_id}
-                                value={hubItem.territory_id}
-                              >
-                                {hubItem.territory_name}
-                              </Option>
-                            ))}
-                        </Select>
-                      </div> */}
-                    </>
-                  );
-                },
-              },
-              {
-                title: "Department",
-                dataIndex: "department",
-                key: "department",
-                width: 160,
-                // filters: this.createFilters("region_name"),
-                // onFilter: (value, record) =>
-                //   record.region_name.includes(value),
-                // sortDirections: ["descend", "ascend"],
-                // sorter: (a, b) => a.region_name.localeCompare(b.region_name),
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ marginLeft: "0px" }}>
-                        <Input
-                          style={{ marginRight: "2px" }}
-                          maxLength={100}
-                          disabled={!rowRecord.isEdit}
-                          // disabled={true}
-                          value={rowRecord.department}
-                          name="department"
-                          onChange={(e) =>
-                            this.handleChange(
-                              e,
-                              rowRecord,
-                              index,
-                              "department",
-                              false
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  );
-                },
-              },
-              {
-                title: "Location",
-                dataIndex: "location",
-                key: "location",
-                width: 140,
-                // filters: this.createFilters("hub_region"),
-                // onFilter: (value, record) =>
-                //   record.hub_region.includes(value),
-                // sortDirections: ["descend", "ascend"],
-                // sorter: (a, b) => a.hub_region.localeCompare(b.hub_region),
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ marginLeft: "0px" }}>
-                        <Input
-                          style={{ marginRight: "2px" }}
-                          maxLength={100}
-                          disabled={!rowRecord.isEdit}
-                          // disabled={true}
-                          value={rowRecord.location}
-                          name="location"
-                          onChange={(e) =>
-                            this.handleChange(
-                              e,
-                              rowRecord,
-                              index,
-                              "location",
-                              false
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  );
-                },
-              },
-              {
-                title: "Age",
-                dataIndex: "age",
-                key: "age",
-                width: 130,
-                // filters: this.createFilters("branch_name"),
-                // onFilter: (value, record) =>
-                //   record.branch_name.includes(value),
-                // sortDirections: ["descend", "ascend"],
-                // sorter: (a, b) => a.branch_name.localeCompare(b.branch_name),
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ marginLeft: "0px" }}>
-                        <Input
-                          style={{ marginRight: "2px" }}
-                          maxLength={100}
-                          disabled={!rowRecord.isEdit}
-                          // disabled={true}
-                          value={rowRecord.age}
-                          name="age"
-                          onChange={(e) =>
-                            this.handleChange(
-                              e,
-                              rowRecord,
-                              index,
-                              "age",
-                              false
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  );
-                },
-              },
-              {
-                key: "salary",
-                title: "Salary",
-                dataIndex: "salary",
-                width: 140,
-                // sortDirections: ["descend", "ascend"],
-                // sorter: (a, b) =>
-                //   a.Mandi_Min_Buying_MT - b.Mandi_Min_Buying_MT,
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ marginLeft: "0px" }}>
-                        <Input
-                          style={{ marginRight: "2px" }}
-                          disabled={!rowRecord.isEdit}
-                          maxLength={100}
-                          value={rowRecord.salary}
-                          name="salary"
-                          onChange={(e) =>
-                            this.handleChange(
-                              e,
-                              rowRecord,
-                              index,
-                              "salary",
-                              false
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  );
-                },
-              },
-              {
-                title: "Action",
-                dataIndex: "Submit",
-                key: "Submit",
-                width: 140,
-                render: (record, rowRecord, index) => {
-                  return (
-                    <>
-                      <div style={{ display: "inline-flex", width: "100%" }}>
-                        <Button
-                          className={
-                            rowRecord.surplus_deficit <= 0
-                              ? "disable-edit-btn"
-                              : "edit-btn"
-                          }
-                          type="primary"
-                          size={"small"}
-                          style={{
-                            marginLeft: 5,
-                            alignSelf: "center",
-                            color: "white",
-                            borderRadius: 15,
-                            padding: "0px 0px 2px",
-                            height: 31,
-                            backgroundColor: "#20346a",
-                          }}
-                          block
-                          htmlType="submit"
-                          // disabled={this.state.isSubmitted}
-                          onClick={() =>
-                            rowRecord.isEdit
-                              ? submitTableRowData(rowRecord)
-                              : handleEditClick(rowRecord, index)
-                          }
-                        >
-                          {rowRecord.isEdit ? "Submit" : "Edit"}
-                        </Button>
+            </>
+          </div>
+          <div className="form-details">
+            {/* <div className="form-container">
+              <span style={{ fontSize: 18, fontWeight: 700, display: "block", marginTop: 10 }}>Bank Details</span>
+              <div className="row" style={{ marginTop: 10 }}>
+                <div
+                  className="dualColumnRow"
+                  style={{ display: "inline-flex" }}
+                >
+                  <div className="left">Account Holder Name :</div>
+                  <div className="right">
+                    {rowData.AccountHolderName}
+                  </div>
 
-                        <Button
-                          className={
-                            !rowRecord.isEdit
-                              ? "disabledBtnClass"
-                              : "btnClass"
-                          }
-                          type="primary"
-                          size={"small"}
-                          style={{
-                            marginLeft: 5,
-                            alignSelf: "center",
-                            color: "white",
-                            borderRadius: 15,
-                            padding: "0px 0px 2px",
-                            height: 31,
-                            backgroundColor: "#20346a",
-                          }}
-                          block
-                          htmlType="submit"
-                          // disabled={!rowRecord.isEdit}
-                          onClick={() =>
-                            rowRecord.isEdit
-                              ? handleCancelClick(rowRecord, index)
-                              : showPromiseConfirm(rowRecord, index)
-                          }
-                        >
-                          {rowRecord.isEdit ? "Cancel" : "Delete"}
-                        </Button>
-                      </div>
-                    </>
-                  );
-                },
-              },
-            ]}
-            // dataSource={setTableData()}
-            dataSource={employeesTableData}
-          />
+                  <div
+                    className="left"
+                    style={{ width: "230px", marginLeft: "15%" }}
+                  >
+                    Account Number :
+                  </div>
+                  <div className="right">
+                    {rowData.AccountNumber}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div
+                  className="dualColumnRow"
+                  style={{ display: "inline-flex" }}
+                >
+                  <div className="left">IFSC code :</div>
+                  <div className="right">
+                    {rowData.IFSCcode}
+                  </div>
+
+                  <div
+                    className="left"
+                    style={{ width: "230px", marginLeft: "15%" }}
+                  >
+                    Bank Name :
+                  </div>
+                  <div className="right">
+                    {rowData.AccountHolderBankName}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div
+                  className="dualColumnRow"
+                  style={{ display: "inline-flex" }}
+                >
+                  <div className="left">PAN Number :</div>
+                  <div className="right">
+                    {rowData.PANNo}
+                  </div>
+
+                  <div
+                    className="left"
+                    style={{ width: "230px", marginLeft: "15%" }}
+                  >
+                    GST Number :
+                  </div>
+                  <div className="right">
+                    {rowData.GSTNumber}
+                  </div>
+                </div>
+              </div>
+              <span style={{ fontSize: 18, fontWeight: 700 }}>Caution Deposit Details</span>
+              <div className="row" style={{ marginTop: 10 }}>
+                <div
+                  className="dualColumnRow"
+                  style={{ display: "inline-flex" }}
+                >
+                  <div className="left">Payment Amount :</div>
+                  <div className="right" style={{ marginTop: "auto", marginBottom: "auto" }}>
+                    {rowData.cautionDepositAmount}
+                  </div>
+
+                  <div
+                    className="left"
+                    style={{ width: "230px", marginLeft: "15%" }}
+                  >
+                    Payment Reference No :
+                  </div>
+                  <div className="right" style={{ width: "180px" }}>
+                    {rowData.cautionDepositReferenceNo}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
+                <div
+                  className="dualColumnRow"
+                  style={{ display: "inline-flex" }}
+                >
+                  <div className="left">Payment Mode :</div>
+                  <div className="right">
+                    {rowData.cautionDepositMode}
+                  </div>
+
+                  <div
+                    className="left"
+                    style={{ width: "230px", marginLeft: "15%" }}
+                  >
+                    Payment Date :
+                  </div>
+                  <div className="right" style={{ width: "180px" }}>
+                    {moment(rowData.cautionDepositDate).format("DD-MM-YYYY")}
+                  </div>
+                </div>
+              </div>
+            </div>*/}
+          </div>
         </div>
-      </Spin>
+      }
     </div>
   );
 }
