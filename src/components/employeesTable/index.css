@@ -122,13 +122,14 @@
     font-weight: 600;
     color: white;
 }
+
 .employee-table .info-container .piechart-info .details {
     display: flex;
     /* justify-content: space-around; */
     /* max-width: 350px; */
     margin-top: -101px;
-
 }
+
 .employee-table .info-container .department-info .details {
     display: flex;
     justify-content: space-around;
@@ -164,4 +165,77 @@
 .select-master-region {
     width: 170px !important;
     height: 32px !important;
+}
+
+.employee-table .form-header {
+    display: flex;
+}
+
+.employee-table .form {
+    display: inline-block;
+    width: 50%;
+    margin-left: 5%;
+    margin-top: 10px;
+    border-right: 2px solid grey;
+}
+
+.employee-table .form .master-form-container .form-label{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.employee-table .form-header .title {
+    display: flex;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.employee-table .form-header .form-right-sec {
+    display: inline-flex;
+    position: absolute;
+    right: 5%;
+}
+
+.employee-table .form-header .save {
+    margin-right: 50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.employee-table .form-details {
+    display: inline-block;
+    position: absolute;
+}
+
+.employee-table .form-details .form-container {
+    margin-left: 100px;
+}
+
+.employee-table .form-details .form-container .row .dualColumnRow .left {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.employee-table .form-details .form-container .row .dualColumnRow .right {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    height: 50px;
+}
+
+.employee-table .form-header .create-submit {
+    display: flex;
+}
+
+.ant-form-item-label {
+    display: block;
+    /* flex-grow: 0; */
+    /* overflow: hidden; */
+    white-space: nowrap;
+    /* vertical-align: middle; */
+}
+
+.ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector {
+    height: 30px;
 }

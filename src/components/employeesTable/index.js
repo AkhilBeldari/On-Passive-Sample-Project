@@ -253,54 +253,6 @@ const EmployeesTable = (props) => {
       salary: null
     }
   )
-  // state = {
-  //   isModalVisible: false,
-  //   isAdd: false,
-  //   currentRecord: null,
-  //   userBranches: null,
-  //   searchText: null,
-  //   searchUserType: 0,
-  //   employeesTableData: [],
-  //   primaryHubList: [],
-  //   hubRegionList: [],
-  //   mandiRegionList: [],
-  //   mandiBranchList: [],
-  //   isSpinnerOnLoad: false,
-  //   isSubmitted: false,
-  //   newData: {
-  //     End_Effective_Date: null,
-  //     Mandi_Min_Buying_MT: null,
-  //     Start_Effective_Date: null,
-  //     Surplus_Factor: null,
-  //     branch_id: null,
-  //     branch_name: "",
-  //     branch_sap_code: "",
-  //     hub_id: null,
-  //     hub_latitude: null,
-  //     hub_longitude: null,
-  //     hub_name: "",
-  //     hub_region_id: null,
-  //     hub_sap_code: "",
-  //     is_active: true,
-  //     is_main_mandi: true,
-  //     is_priority_mandi: true,
-  //     mandi_latitude: null,
-  //     mandi_longitude: null,
-  //     mandi_name: "",
-  //     mandi_sap_code: "",
-  //     region_id: null,
-  //     region_name: "",
-  //     state_name: "",
-  //   },
-  //   rowData: undefined,
-  //   selectedRegionValue: undefined,
-  //   selectedRegionName: "",
-  //   selectedBranchValue: undefined,
-  //   selectedBranchname: "",
-  //   selectedBranchList: [],
-  //   selectedRegionList: [],
-  //   recordCount: 0,
-  // };
 
   const setTableData = () => {
     console.log("mandi table data ", employeesTableData);
@@ -450,13 +402,35 @@ const EmployeesTable = (props) => {
     return uniqueFilterData;
   };
 
-  const submitTableRowData = (row) => {
+  const submitTableRowData = (row, text) => {
     console.log("Submit Row DAta", row);
     if (validate(row)) {
-      let newData = setTableData();
-      newData[row.key] = row;
-      newData[row.key].isEdit = false;
-      setEmployeesTableData(newData);
+      if (text === "update") {
+        let newData = setTableData();
+        newData[row.key] = row;
+        newData[row.key].isEdit = false;
+        setEmployeesTableData(newData);
+      } else {
+        employeesTableData.push({
+          ...newFormData,
+          id: employeesTableData.length + 1, //temparorly i'm updating the ID with length + 1
+          isEdit: false,
+        })
+        console.log("Added the new REcord =====> ", employeesTableData);
+        setEmployeesTableData(employeesTableData);
+        setNewFormData({
+          id: null,
+          full_name: null,
+          job_title: null,
+          department: null,
+          location: null,
+          age: null,
+          salary: null
+        })
+        // isTable && buildChart();
+        history.push("/dashboard")
+        window.location.reload()
+      }
     }
   };
 
@@ -525,45 +499,9 @@ const EmployeesTable = (props) => {
     return true;
   };
 
-  // const setModalVisibility = (status) => {
-  //   if (status) {
-  //     const nData = {
-  //       End_Effective_Date: null,
-  //       Mandi_Min_Buying_MT: null,
-  //       Start_Effective_Date: null,
-  //       Surplus_Factor: null,
-  //       branch_id: null,
-  //       branch_name: "",
-  //       branch_sap_code: "",
-  //       hub_id: null,
-  //       hub_latitude: null,
-  //       hub_longitude: null,
-  //       hub_name: "",
-  //       hub_region: "",
-  //       hub_region_id: null,
-  //       hub_sap_code: "",
-  //       is_active: true,
-  //       is_main_mandi: true,
-  //       is_priority_mandi: true,
-  //       mandi_latitude: null,
-  //       mandi_longitude: null,
-  //       mandi_name: "",
-  //       mandi_sap_code: "",
-  //       region_id: null,
-  //       region_name: "",
-  //       state_name: "",
-  //       isEdit: false,
-  //     };
-
-  //     setState({ newData: nData });
-  //   }
-
-  //   setState({ isModalVisible: status });
-  // };
-
   const handleDropdownChange = (value, row, target, index, optionlabel, isPopup) => {
     console.log(
-      "row on handlechange ",
+      "row on handlechange =========> ",
       row,
       value,
       index,
@@ -571,72 +509,33 @@ const EmployeesTable = (props) => {
       optionlabel,
       isPopup
     );
-    // const specificHub = state.primaryHubList.filter((item) => {
-    //   if (item.territory_id === value) {
-    //     return item;
-    //   }
-    // });
-    // // console.log("Specified OBJ", specificHub);
-    // let a;
 
-    // if (isPopup === false) {
-    //   // console.log("region ame ", value, optionlabel)
-    //   a = employeesTableData;
-
-    //   if (target === "is_active") {
-    //     a[row.key].is_active = Boolean(value);
-    //   } else if (target === "is_priority_mandi") {
-    //     a[row.key].is_priority_mandi = Boolean(value);
-    //   } else if (target === "is_main_mandi") {
-    //     a[row.key].is_main_mandi = Boolean(value);
-    //   } else if (target === "hub_name") {
-    //     a[row.key].hub_name = specificHub[0].territory_name;
-    //     a[row.key].hub_id = specificHub[0].territory_id;
-    //     a[row.key].hub_region = specificHub[0].hub_region_name;
-    //     a[row.key].hub_region_id = specificHub[0].hub_region_id;
-    //     a[row.key].branch_name = specificHub[0].parent_name;
-    //     a[row.key].branch_id = specificHub[0].parent_id;
-    //   } else if (target === "region_name") {
-    //     // console.log("region ame ", value, optionlabel)
-    //     a[row.key].region_name = optionlabel;
-    //     a[row.key].region_id = value;
-    //     row.region_name = optionlabel;
-    //     row.region_id = value;
-    //   }
-    //   // else if (target === "branch_name") {
-    //   //   a[row.key].branch_name = optionlabel;
-    //   //   a[row.key].branch_id = value;
-    //   // }
-    //   console.log(" check value of a ", a);
-    //   setState({ employeesTableData: a });
-    // } else {
-    //   // console.log("region ame1 ", value, optionlabel)
-    //   a = state.newData;
-
-    //   if (target === "is_active") {
-    //     a.is_active = Boolean(value);
-    //   } else if (target === "is_priority_mandi") {
-    //     a.is_priority_mandi = Boolean(value);
-    //   } else if (target === "is_main_mandi") {
-    //     a.is_main_mandi = Boolean(value);
-    //   } else if (target === "hub_name") {
-    //     a.hub_name = specificHub[0].territory_name;
-    //     a.hub_id = specificHub[0].territory_id;
-    //     a.hub_region = specificHub[0].hub_region_name;
-    //     a.hub_region_id = specificHub[0].hub_region_id;
-    //     a.branch_name = specificHub[0].parent_name;
-    //     a.branch_id = specificHub[0].parent_id;
-    //   } else if (target === "region_name") {
-    //     a.region_name = optionlabel;
-    //     a.region_id = value;
-    //   }
-    //   // else if (target === "branch_name") {
-    //   //   a.branch_name = optionlabel;
-    //   //   a.branch_id = value;
-    //   // }
-    //   // console.log("a data ---->", a);
-    //   setState({ newData: a });
-    // }
+    console.log("region ame1 ", value, optionlabel)
+    if (target === "department") {
+      if (value === "") {
+        setNewFormData({
+          ...newFormData,
+          department: ""
+        })
+      } else if (value) {
+        setNewFormData({
+          ...newFormData,
+          department: value
+        })
+      }
+    } else if (target === "location") {
+      if (value === "") {
+        setNewFormData({
+          ...newFormData,
+          location: ""
+        })
+      } else if (value) {
+        setNewFormData({
+          ...newFormData,
+          location: value
+        })
+      }
+    }
   };
 
   // const handleCancel = () => {
@@ -718,71 +617,6 @@ const EmployeesTable = (props) => {
     else {
       console.log("new data ", newFormData);
       a = newFormData;
-
-      <>
-        {/* // if (name === "mandi_name") { 
-      //   a.mandi_name = e.target.value;
-      // }
-      // else if (name === "Mandi_Min_Buying_MT") {
-      //   if (e.target.value === "") {
-      //     a.Mandi_Min_Buying_MT = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a.Mandi_Min_Buying_MT = e.target.value;
-      //   }
-      // }
-      // else if (name === "Surplus_Factor") {
-      //   if (e.target.value === "") {
-      //     a.Surplus_Factor = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a.Surplus_Factor = e.target.value;
-      //   }
-      // }
-      // else if (name === "mandi_sap_code") {
-      //   if (e.target.value === "") {
-      //     a.mandi_sap_code = "";
-      //   }
-      //   else if (e.target.value.match(alphaNumericRegex)) {
-      //     a.mandi_sap_code = e.target.value;
-      //   }
-      // }
-      // else if (name === "mandi_latitude") {
-      //   if (e.target.value === "") {
-      //     a.mandi_latitude = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a.mandi_latitude = e.target.value;
-      //   }
-      // }
-      // else if (name === "mandi_longitude") {
-      //   if (e.target.value === "") {
-      //     a.mandi_longitude = "";
-      //   }
-      //   else if (e.target.value.match(numberRegex)) {
-      //     a.mandi_longitude = e.target.value;
-      //   }
-      // }
-      // else if (name === "Start_Effective_Date") {
-      //   console.log("moment(e, YYYY-MM-DD).isSameOrBefore(moment(a.End_Effective_Date))", moment(e, "YYYY-MM-DD").isSameOrBefore(moment(a.End_Effective_Date)));
-      //   if (!moment(e, "YYYY-MM-DD").isSameOrBefore(moment(a.End_Effective_Date))) {
-      //     a.Start_Effective_Date = e;
-      //     a.End_Effective_Date = e;
-      //   }
-      //   else {
-      //     a.Start_Effective_Date = e;
-      //   }
-      // }
-      // else if (name === "End_Effective_Date") {
-      //   // if (e.target.value === "") {
-      //   //   a.mandi_longitude = "";
-      //   // }
-      //   // else if (e.target.value.match(numberRegex)) {
-      //   a.End_Effective_Date = e;
-      //   // }
-      // }
-      */}
-      </>
 
       switch (name) {
         case "full_name":
@@ -1407,7 +1241,7 @@ const EmployeesTable = (props) => {
                               // disabled={state.isSubmitted}
                               onClick={() =>
                                 rowRecord.isEdit
-                                  ? submitTableRowData(rowRecord)
+                                  ? submitTableRowData(rowRecord, "update")
                                   : handleEditClick(rowRecord, index)
                               }
                             >
@@ -1454,551 +1288,269 @@ const EmployeesTable = (props) => {
             </div>
           </Spin>
         </>
-        : <div>
+        : <>
           <div className="form-header">
             <div className="title"> Create Employee </div>
-            <div className="save"> Save </div>
-            <div className="create-submit">
-              <Button
-                className={"btnClass"}
-                type="primary"
-                size={"small"}
-                style={{
-                  marginLeft: 5,
-                  alignSelf: "center",
-                  color: "white",
-                  borderRadius: 15,
-                  padding: "0px 0px 2px",
-                  height: 31,
-                  backgroundColor: "#20346a",
-                }}
-                block
-                htmlType="submit"
-                // disabled={!rowRecord.isEdit}
-                onClick={() => submitTableRowData(newFormData)}
-              >
-                CREATE EMPLOYEES
+            <div className="form-right-sec">
+              <div className="save" onClick={() => alert("Data will be Saved.")}> Save </div>
+              <div className="create-submit">
+                <Button
+                  className={"btnClass"}
+                  type="primary"
+                  size={"small"}
+                  style={{
+                    marginLeft: 5,
+                    alignSelf: "center",
+                    color: "white",
+                    borderRadius: 15,
+                    padding: "0px 10px",
+                    height: 31,
+                    backgroundColor: "#20346a",
+                  }}
+                  block
+                  htmlType="submit"
+                  // disabled={!rowRecord.isEdit}
+                  onClick={() => submitTableRowData(newFormData, "new")}
+                >
+                  CREATE EMPLOYEES
               </Button>
+              </div>
             </div>
           </div>
           <div className="form">
-            <> {/* <Modal
-          className="add-master-modal"
-          title={"Add Mandi"}
-          footer={false}
-          // style={{
-          //   textAlign: "center",
-          //   height: "400px",
-          // }}
-          // visible={true}
-          visible={state.isModalVisible}
-          destroyOnClose={true}
-          onCancel={handleCancel}
-        >
-          <div className="master-form-container">
-            <Form
-              layout="horizontal"
-              //   onValuesChange={onFormLayoutChange}
-              size={"small"}
-            // onSubmit={submitTableRowData(state.newData)}
-            >
-              <div>
-                <div
-                  className="checkbox-group1"
-                  style={{
-                    display: "inline-block",
-                    width: "30%",
-                    marginRight: 7,
-                  }}
-                >
-                  <Form.Item label="Mandi Name">
+
+            <div className="master-form-container">
+              <Form
+                layout="horizontal"
+                //   onValuesChange={onFormLayoutChange}
+                size={"small"}
+              // onSubmit={submitTableRowData(newFormData)}
+              >
+                <div>
+                  <div
+                    className="checkbox-group1"
+                    style={{
+                      display: "inline-block",
+                      width: "60%",
+                      marginBottom: 38
+                    }}
+                  >
+                    <span className="form-label"> Full Name </span>
                     <Input
-                      style={{ marginRight: "2px" }}
+                      style={{ marginRight: "2px", borderRadius: 8, height: 30 }}
                       maxLength={100}
                       required
-                      value={state.newData.mandi_name}
-                      name="mandi_name"
+                      value={newFormData.full_name}
+                      name="full_name"
                       onChange={(e) =>
                         handleChange(
                           e,
-                          state.newData,
-                          -0,
-                          "mandi_name",
+                          newFormData,
+                          -1,
+                          "full_name",
                           true
                         )
                       }
                     />
-                  </Form.Item>
-                </div>
+                  </div>
+                  <div
+                    className="checkbox-group1"
+                    style={{
+                      display: "inline-block",
+                      width: "60%",
+                      marginBottom: 38
+                    }}
+                  >
+                    <span className="form-label">Job Title</span>
+                    <Input
+                      style={{ marginRight: "2px", borderRadius: 8, height: 30 }}
+                      maxLength={100}
+                      value={newFormData.job_title}
+                      name="job_title"
+                      onChange={(e) =>
+                        handleChange(
+                          e,
+                          newFormData,
+                          -1,
+                          "job_title"
+                        )
+                      }
+                    />
+                  </div>
 
-                <div
-                  className="form-top-container"
-                  style={{
-                    display: "inline-block",
-                    width: "33%",
-                    marginRight: 7,
-                  }}
-                >
-                  <Form.Item label="Select Primary Hub">
+                  <div
+                    className="checkbox-group1"
+                    style={{
+                      display: "block",
+                      width: "60%",
+                      marginBottom: 38
+                    }}
+                  >
+                    <span className="form-label">Department</span>
+                    {/* <Input
+                      style={{ marginRight: "2px", borderRadius: 8, height: 30 }}
+                      maxLength={100}
+                      value={newFormData.department}
+                      name="department"
+                      onChange={(e) =>
+                        handleChange(
+                          e,
+                          newFormData,
+                          -1,
+                          "department",
+                          true
+                        )
+                      }
+                    /> */}
                     <Select
                       // className="remarks-select"
                       showSearch
                       optionFilterProp="children"
-                      name="hub_name"
-                      required
-                      value={state.newData.hub_name}
+                      name="department"
+                      style={{
+                        marginTop: 0,
+                        borderRadius: 8,
+                        width: "100%",
+                        display: "block",
+                        height: "30px",
+                        marginLeft: "0px"
+                      }}
+                      // required
+                      value={newFormData.department}
                       onSelect={(value, option) =>
                         handleDropdownChange(
                           value,
-                          state.newData,
-                          "hub_name",
-                          -0,
+                          newFormData,
+                          "department",
+                          -1,
                           option.props.children,
                           true
                         )
                       }
                     >
-                      {state.primaryHubList &&
-                        state.primaryHubList.length &&
-                        state.primaryHubList.map((hubItem, idx) => (
-                          <Option
-                            key={hubItem.territory_id}
-                            value={hubItem.territory_id}
-                          >
-                            {hubItem.territory_name}
-                          </Option>
-                        ))}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div
-                  className="checkbox-group1"
-                  style={{ display: "inline-block", width: "33%" }}
-                >
-                  <Form.Item label="Select Mandi Region">
-                    <Select
-                      // className="remarks-select"
-                      showSearch
-                      optionFilterProp="children"
-                      name="region_name"
-                      required
-                      value={state.newData.region_name}
-                      onSelect={(value, option) =>
-                        handleDropdownChange(
-                          value,
-                          state.newData,
-                          "region_name",
-                          -0,
-                          option.props.children,
-                          true
-                        )
-                      }
-                    >
-                      {state.mandiRegionList &&
-                        state.mandiRegionList.length &&
-                        state.mandiRegionList.map(
-                          (mandiRegionItem, idx) => (
+                      {departmentList &&
+                        departmentList.length &&
+                        departmentList.map(
+                          (departmentItem, idx) => (
                             <Option
-                              key={mandiRegionItem.region_id}
-                              value={mandiRegionItem.region_id}
+                              key={departmentItem.value}
+                              value={departmentItem.text}
                             >
-                              {mandiRegionItem.region_name}
+                              {departmentItem.text}
                             </Option>
                           )
                         )}
                     </Select>
-                  </Form.Item>
-                </div>
-              </div>
-              {state.newData.hub_region !== "" &&
-                state.newData.branch_name !== "" ? (
-                  <div>
-                    <div
-                      className="left"
-                      style={{
-                        display: "inline-block",
-                        marginRight: 10,
-                        width: "45%",
-                      }}
-                    >
-                      <span style={{ color: "black" }}>Hub Region:</span>{" "}
-                      <b>{state.newData.hub_region}</b>
-                    </div>
-                    <div
-                      className="right"
-                      style={{ display: "inline-block", width: "45%" }}
-                    >
-                      <span style={{ color: "black" }}>Hub Branch:</span>{" "}
-                      <b>{state.newData.branch_name}</b>
-                    </div>
                   </div>
-                ) : null}
-              <hr />
-              <div>
-                <div
-                  className="checkbox-group1"
-                  style={{
-                    display: "inline-block",
-                    width: "30%",
-                    marginRight: 10,
-                  }}
-                >
-                  <Form.Item label="Minimum Buying (MT)">
-                    <Input
-                      style={{ marginRight: "2px" }}
-                      maxLength={100}
-                      value={state.newData.Mandi_Min_Buying_MT}
-                      name="Mandi_Min_Buying_MT"
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          state.newData,
-                          -0,
-                          "Mandi_Min_Buying_MT"
-                        )
-                      }
-                    />
-                  </Form.Item>
-                </div>
 
-                <div
-                  className="checkbox-group1"
-                  style={{
-                    display: "inline-block",
-                    width: "30%",
-                    marginRight: 10,
-                  }}
-                >
-                  <Form.Item label="Surplus Factor">
-                    <Input
-                      style={{ marginRight: "2px" }}
+                  <div
+                    className="checkbox-group1"
+                    style={{
+                      display: "block", width: "60%", marginBottom: 38
+                    }} >
+                    <span className="form-label">Location</span>
+                    {/* <Input
+                      style={{ marginRight: "2px", borderRadius: 8, height: 30 }}
                       maxLength={100}
-                      value={state.newData.Surplus_Factor}
-                      name="Surplus_Factor"
+                      value={newFormData.location}
+                      name="location"
                       onChange={(e) =>
                         handleChange(
                           e,
-                          state.newData,
-                          -0,
-                          "Surplus_Factor",
+                          newFormData,
+                          -1,
+                          "location",
                           true
                         )
                       }
-                    />
-                  </Form.Item>
-                </div>
-
-                <div
-                  className="checkbox-group1"
-                  style={{ display: "inline-block", width: "30%" }}
-                >
-                  <Form.Item label="SAP Code">
-                    <Input
-                      style={{ marginRight: "2px" }}
-                      maxLength={100}
-                      value={state.newData.mandi_sap_code}
-                      name="mandi_sap_code"
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          state.newData,
-                          -0,
-                          "mandi_sap_code",
-                          true
-                        )
-                      }
-                    />
-                  </Form.Item>
-                </div>
-              </div>
-              <div>
-                <div
-                  className="checkbox-group1"
-                  style={{ display: "inline-block", marginRight: 40 }}
-                >
-                  <Form.Item
-                    label="Mandi Latitude"
-                    style={{ display: "inline-block", marginRight: 10 }}
-                  >
-                    <Input
-                      style={{ marginRight: "2px" }}
-                      maxLength={100}
-                      value={state.newData.mandi_latitude}
-                      name="mandi_latitude"
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          state.newData,
-                          -0,
-                          "mandi_latitude",
-                          true
-                        )
-                      }
-                    />
-                  </Form.Item>
-                </div>
-
-                <div
-                  className="checkbox-group1"
-                  style={{ display: "inline-block" }}
-                >
-                  <Form.Item
-                    label="Mandi Longitude"
-                    style={{ display: "inline-block" }}
-                  >
-                    <Input
-                      style={{ marginRight: "2px" }}
-                      maxLength={100}
-                      value={state.newData.mandi_longitude}
-                      name="mandi_longitude"
-                      onChange={(e) =>
-                        handleChange(
-                          e,
-                          state.newData,
-                          -0,
-                          "mandi_longitude",
-                          true
-                        )
-                      }
-                    />
-                  </Form.Item>
-                </div>
-              </div>
-              {/*<div>
-                //   <div className="checkbox-group1" style={{ display: "inline-block", marginRight: 10 }}>
-                    Start Effective Date : <DatePicker
-                //       name="Start_Effective_Date"
-                //       allowClear={true}
-                //       // disabled={
-                //       //   !canEnableTextBox("1", statutoryDetails.registered_VAT)
-                //       // }
-                //       format="YYYY-MM-DD"
-                //       placeholder="Start Date"
-                //       defaultValue={state.newData.Start_Effective_Date === null || state.newData.Start_Effective_Date === undefined ? undefined : moment(state.newData.Start_Effective_Date, "YYYY-MM-DD")}
-                //       // value={
-                //       //   state.newData.Start_Effective_Date !== null || state.newData.Start_Effective_Date !== "" || state.newData.Start_Effective_Date !== undefined
-                //       //     ? moment(state.newData.Start_Effective_Date, "YYYY-MM-DD")
-                //       //     : undefined
-                //       // }
-                //       onChange={(value, date) => handleChange(date, state.newData, -0, "Start_Effective_Date", true)
-                //       }
-                //     // disabledDate={disabledDate}
-                //     />
-                //   </div>
-                //   <div className="checkbox-group1" style={{ display: "inline-block", }}>
-                //     End Effective Date: <DatePicker
-                //       name="End_Effective_Date"
-                //       allowClear={true}
-                //       placeholder="End Date"
-                //       // disabled={
-                //       //   !canEnableTextBox("1", statutoryDetails.registered_VAT)
-                //       // }
-                //       defaultValue={state.newData.End_Effective_Date === null || state.newData.End_Effective_Date === undefined ? undefined : moment(state.newData.End_Effective_Date, "YYYY-MM-DD")}
-                //       // value={
-                //       //   state.newData.End_Effective_Date !== null || state.newData.End_Effective_Date !== "" || state.newData.End_Effective_Date !== undefined
-                //       //     ? moment(state.newData.End_Effective_Date, "YYYY-MM-DD")
-                //       //     : undefined
-                //       // }
-                //       onChange={(value, date) => handleChange(date, state.newData, -0, "End_Effective_Date", true)
-                //       }
-                //       // disabledDate={disabledDate(state.newData, "new")}
-                //       disabledDate={d => !d || d.isSameOrBefore(state.newData.Start_Effective_Date)}
-                //     />
-                //   </div>
-              // </div> //================
-              <div
-                className="checkbox-group1"
-                style={{ display: "inline-block", marginRight: 40 }}
-              >
-                <Form.Item label="Mandi Priority">
-                  {/* <Select
-                      value={
-                        state.newData.is_priority_mandi === true ? "Yes" : "No"
-                      }
+                    /> */}
+                    <Select
+                      // className="remarks-select"
                       showSearch
-                    optionFilterProp="children"
-                      onChange={(value, option) =>
+                      optionFilterProp="children"
+                      name="location"
+                      style={{
+                        marginTop: 0,
+                        borderRadius: 8,
+                        width: "100%",
+                        display: "block",
+                        height: "30px",
+                        marginLeft: "0px"
+                      }}
+                      // required
+                      value={newFormData.location}
+                      onSelect={(value, option) =>
                         handleDropdownChange(
                           value,
-                          state.newData,
-                          "is_priority_mandi",
-                          -0,
+                          newFormData,
+                          "location",
+                          -1,
                           option.props.children,
                           true
                         )
                       }
-                      style={{
-                        width: "100px", background: "white",
-                        borderColor: "gray",
-                        borderWidth: "thin",
-                        fontWeight: "400",
-                        fontSize: "medium"
-                      }}
                     >
-                      <Option key={1} value={1} style={{
-                        fontWeight: "400",
-                        fontSize: "medium"
-                      }}>
-                        {"Yes"}
-                      </Option>
-                      <Option key={0} value={0}>
-                        {"No"}
-                      </Option>
-                    </Select> //================
-                  <Radio.Group
-                    name="is_priority_mandi"
-                    value={state.newData.is_priority_mandi ? 1 : 0}
-                    required
-                    onChange={(e, option) =>
-                      handleDropdownChange(
-                        e.target.value,
-                        state.newData,
-                        "is_priority_mandi",
-                        -0,
-                        "",
-                        true
-                      )
-                    }
+                      {locationList &&
+                        locationList.length &&
+                        locationList.map(
+                          (locationItem, idx) => (
+                            <Option
+                              key={locationItem.value}
+                              value={locationItem.text}
+                            >
+                              {locationItem.text}
+                            </Option>
+                          )
+                        )}
+                    </Select>
+                  </div>
+                  <div
+                    className="checkbox-group1"
+                    style={{ display: "block", marginBottom: 38, width: "60%" }}
                   >
-                    <Radio value={1}>Yes</Radio>
-                    <Radio value={0}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </div>
-
-              <div
-                className="checkbox-group1"
-                style={{ display: "inline-block", marginRight: 40 }}
-              >
-                <Form.Item label="Main Mandi">
-                  {/* <Select
-                      value={
-                        state.newData.is_main_mandi === true ? "Yes" : "No"
-                      }
-                      showSearch
-                    optionFilterProp="children"
-                      onChange={(value, option) =>
-                        handleDropdownChange(
-                          value,
-                          state.newData,
-                          "is_main_mandi",
-                          -0,
-                          option.props.children,
+                    <span className="form-label">Age</span>
+                    <Input
+                      style={{ marginRight: "2px", borderRadius: 8, height: 30 }}
+                      maxLength={100}
+                      value={newFormData.age}
+                      name="age"
+                      onChange={(e) =>
+                        handleChange(
+                          e,
+                          newFormData,
+                          -1,
+                          "age",
                           true
                         )
                       }
-                      style={{
-                        width: "100px", background: "white",
-                        borderColor: "gray",
-                        borderWidth: "thin",
-                        fontWeight: "400",
-                        fontSize: "medium"
-                      }}
-                    >
-                      <Option key={1} value={1}>
-                        {"Yes"}
-                      </Option>
-                      <Option key={0} value={0}>
-                        {"No"}
-                      </Option>
-                    </Select> //================
-                  <Radio.Group
-                    name="is_main_mandi"
-                    value={state.newData.is_main_mandi ? 1 : 0}
-                    required
-                    onChange={(e, option) =>
-                      handleDropdownChange(
-                        e.target.value,
-                        state.newData,
-                        "is_main_mandi",
-                        -0,
-                        "",
-                        true
-                      )
-                    }
-                  >
-                    <Radio value={1}>Yes</Radio>
-                    <Radio value={0}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </div>
+                    />
+                  </div>
 
-              <div
-                className="checkbox-group1"
-                style={{ display: "inline-block" }}
-              >
-                <Form.Item label="Active">
-                  {/* <Select
-                      value={
-                        state.newData.is_active === true ? "Yes" : "No"
-                      }
-                      showSearch
-                    optionFilterProp="children"
-                      onChange={(value, option) =>
-                        handleDropdownChange(
-                          value,
-                          state.newData,
-                          "is_active",
-                          -0,
-                          option.props.children,
+                  <div
+                    className="checkbox-group1"
+                    style={{ display: "inline-block", marginBottom: 38, width: "60%" }}
+                  >
+                    <span className="form-label">Salary</span>
+                    <Input
+                      style={{ marginRight: "2px", borderRadius: 8, height: 30 }}
+                      maxLength={100}
+                      value={newFormData.salary}
+                      name="salary"
+                      onChange={(e) =>
+                        handleChange(
+                          e,
+                          newFormData,
+                          -1,
+                          "salary",
                           true
                         )
                       }
-                      style={{
-                        width: "100px", background: "white",
-                        borderColor: "gray",
-                        borderWidth: "thin",
-                        fontWeight: "400",
-                        fontSize: "medium"
-                      }}
-                    >
-                      <Option key={1} value={1}>
-                        {"Yes"}
-                      </Option>
-                      <Option key={0} value={0}>
-                        {"No"}
-                      </Option>
-                    </Select> //=====================
-                  <Radio.Group
-                    name="is_active"
-                    required
-                    value={state.newData.is_active ? 1 : 0}
-                    onChange={(e, option) =>
-                      handleDropdownChange(
-                        e.target.value,
-                        state.newData,
-                        "is_active",
-                        -0,
-                        "",
-                        true
-                      )
-                    }
-                  >
-                    <Radio value={1}>Yes</Radio>
-                    <Radio value={0}>No</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </div>
+                    />
+                  </div>
+                </div>
+              </Form>
+            </div>
 
-              <div className="form-bottom-container">
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    disabled={state.isSubmitted}
-                    onClick={() => {
-                      // setState({isSubmitted:false})
-                      submitTableRowData(state.newData);
-                    }}
-                  >
-                    Submit
-                    </Button>
-                </Form.Item>
-              </div>
-            </Form>
-          </div>
-        </Modal> */}
-            </>
           </div>
           <div className="form-details">
             <div className="form-container">
@@ -2006,39 +1558,47 @@ const EmployeesTable = (props) => {
               <div className="row" style={{ marginTop: 10 }}>
                 <div
                   className="dualColumnRow"
-                  style={{ display: "inline-flex" }}
+                // style={{ display: "inline-flex" }}
                 >
                   <div className="left"> Full Name </div>
                   <div className="right"> {newFormData.full_name} </div>
 
-                  <div lassName="left" style={{ width: "230px", marginLeft: "15%" }} > Job Title </div>
+                  <div lassName="left"
+                  // style={{ width: "230px", marginLeft: "15%" }}
+                  > Job Title </div>
                   <div className="right"> {newFormData.job_title} </div>
                 </div>
               </div>
               <div className="row">
                 <div
                   className="dualColumnRow"
-                  style={{ display: "inline-flex" }}
+                // style={{ display: "inline-flex" }}
                 >
                   <div className="left"> Department </div>
                   <div className="right"> {newFormData.department} </div>
 
-                  <div className="left" style={{ width: "230px", marginLeft: "15%" }} > Location </div>
+                  <div className="left"
+                  // style={{ width: "230px", marginLeft: "15%" }} 
+                  > Location </div>
                   <div className="right"> {newFormData.location} </div>
                 </div>
               </div>
               <div className="row">
-                <div className="dualColumnRow" style={{ display: "inline-flex" }} >
+                <div className="dualColumnRow"
+                // style={{ display: "inline-flex" }} 
+                >
                   <div className="left">Age</div>
                   <div className="right"> {newFormData.age} </div>
 
-                  <div className="left" style={{ width: "230px", marginLeft: "15%" }} > Salary </div>
+                  <div className="left"
+                  // style={{ width: "230px", marginLeft: "15%" }} 
+                  > Salary </div>
                   <div className="right"> {newFormData.salary} </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       }
     </div >
   );
