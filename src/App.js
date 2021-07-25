@@ -16,16 +16,16 @@ const { Footer } = Layout;
 class App extends Component {
 
   render() {
-    const { isLogged } = this.props;
+    const { loggedIn } = this.props;
 
     return (
       <div className="App">
         <Router>
           <Switch>
             <Route exact path="/" render={() => localStorage.getItem("isLogged") === "true" ? (<Redirect to="/dashboard" />) : (<Login props={this.props} />)} />
-            <Route exact path="/login" render={() => localStorage.getItem("isLogged") === "true" ? (<Redirect to="/dashboard" />) : (<Login props={this.props}  />)} />
-            <PrivateRoute exact path="/dashboard" Component={MainLayout} isLogged={isLogged} />
-            <PrivateRoute exact path="/createemployee" Component={MainLayout} isLogged={isLogged} />
+            <Route exact path="/login" render={() => localStorage.getItem("isLogged") === "true" ? (<Redirect to="/dashboard" />) : (<Login props={this.props} />)} />
+            <PrivateRoute exact path="/dashboard" Component={MainLayout} isLogged={loggedIn} />
+            <PrivateRoute exact path="/createemployee" Component={MainLayout} isLogged={loggedIn} />
           </Switch>
         </Router>
         <Footer style={{ textAlign: "center", padding: "9px 0px 2px 0px" }}>
@@ -40,7 +40,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-
+    loggedIn: state.login.loggedIn,
   }
 };
 

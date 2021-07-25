@@ -7,7 +7,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import EmployeesTable from '../employeesTable';
-import CreateEmployeesForm from '../createEmployeesForm';
 
 import {
   MenuUnfoldOutlined,
@@ -16,6 +15,7 @@ import {
   UserOutlined,
   HomeOutlined,
   SettingOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 const { Header, Sider, Content, Footer } = Layout;
@@ -52,7 +52,7 @@ class MainLayout extends React.Component {
   render() {
     return (
       <Layout>
-        {console.log("Match Parms", this.props.match.path, this.props)}
+        {/* {console.log("Match Parms", this.props.match.path, this.props, "currentUser", this.props.currentUser)} */}
         <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
           <div className="logo">On Passive</div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
@@ -68,7 +68,7 @@ class MainLayout extends React.Component {
             <Menu.Item key="4" icon={<SettingOutlined />}>
               Settings
         </Menu.Item>
-            <Menu.Item key="5" icon={<SettingOutlined />} onClick={() => {
+            <Menu.Item key="5" icon={<LogoutOutlined />} onClick={() => {
               localStorage.removeItem("isLogged");
               this.props.history.push("/login");
             }}>
@@ -122,7 +122,7 @@ class MainLayout extends React.Component {
 
 const mapStateToProps = state => {
   return {
-
+    currentUser: state.login.currentUser
   }
 }
 

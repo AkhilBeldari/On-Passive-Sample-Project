@@ -12,289 +12,157 @@ import { ReactComponent as LogoITC } from "../../assets/itc_trade_next_logo.svg"
 
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 import { BarLoader } from "react-spinners";
+import { loginSuccess } from '../../store/actions';
 
 const { confirm } = Modal;
 
 const LoginPage = (props) => {
-  const { history, setUserLoggedInStatus, setUserData, userData } = props;
-  const [loader, setLoader] = useState(false);
-  const [spinning, setSpinning] = useState(false);
+  const { history, currentUser, loginSuccess } = props;
   const [enterPasswordScreen, setEnterPasswordScreen] = useState(false);
   const [forgotScreen, setForgotScreen] = useState(false);
   const [resetMsgShow, setResetMsgShow] = useState(false);
 
   const [form] = Form.useForm();
-  const [form2] = Form.useForm();
 
-  // const history = useHistory();
-
-  const onFinish = async (username, password) => {
-    //   try {
-    //     const dataToSend = {
-    //       username: username,
-    //       password: password,
-    //       supplier: false,
-    //     };
-
-    //     setLoader(true);
-
-    //     const loginResponse = await loginService(dataToSend);
-    //     console.log("LoginResponse: ", loginResponse);
-
-    //     //TODO: autologout to be setup
-    //     if (loginResponse.status == 200) {
-    //       console.log(loginResponse.data);
-    //       setUserData({
-    //         ...loginResponse.data.data,
-    //         locationFeatureArray: loginResponse.data.data.location_access.map(
-    //           (item) => item.feature_code
-    //         ),
-    //         username: username,
-    //         logout_timestamp:
-    //           Math.round(new Date().getTime() / 1000) +
-    //           loginResponse.data.data.refresh_token_expiry,
-    //       });
-    //       console.log(
-    //         "date time at logout : ",
-    //         new Date(
-    //           (Math.round(new Date().getTime() / 1000) +
-    //             loginResponse.data.data.refresh_token_expiry) *
-    //           1000
-    //         )
-    //       );
-    //       setUserLoggedInStatus(true);
-    //       history.replace("/home");
-    //     } else {
-    //       console.log("Login response: ", loginResponse.data.message);
-    //       message.error("Login Failed.");
-    //       setLoader(false);
-    //     }
-    //   } catch (error) {
-    //     if (error.response) {
-    //       message.error(error.response.data.message);
-    //     } else {
-    //       message.error("Server Unavailable.");
-    //     }
-    //     setLoader(false);
-    //   }
-    // };
-    // const onFinishReset = async (old_password, new_password, confirm_password) => {
-    //   try {
-    //     setResetting(true);
-    //     const dataToSend = {
-    //       user_name: form.getFieldValue("username"),
-    //       old_password: old_password,
-    //       new_password: new_password,
-    //     };
-
-    //     const response = await changePwService(dataToSend);
-    //     console.log("ChangeResponse: ", response);
-
-    //     if (response.status == 200) {
-    //       console.log(response.data);
-    //       setForgotPwModal(false);
-    //       form.setFieldsValue({
-    //         password: new_password,
-    //       });
-    //       onFinish({
-    //         username: form.getFieldValue("username"),
-    //         password: new_password,
-    //       });
-    //     } else {
-    //       console.log("Change response: ", response.data.message);
-    //       message.error("Cannot reset password..!");
-    //     }
-    //   } catch (error) {
-    //     message.error(error.response.data.message);
-    //   }
-    //   setResetting(false);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-  const onFinishFailedReset = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const forgotPwClicked = async () => {
-    //   console.log(form.getFieldValue("username"));
-    //   if (
-    //     form.getFieldValue("username") !== null &&
-    //     form.getFieldValue("username") !== "" &&
-    //     form.getFieldValue("username") !== undefined
-    //   ) {
-    //     setSpinning(true);
-    //     try {
-    //       const response = await forgotPwService({
-    //         user_name: form.getFieldValue("username"),
-    //         supplier: false,
-    //       });
-    //       if (response.data.status) {
-    //         setForgotPwModal(true);
-    //         setSpinning(false);
-    //       } else {
-    //         message.warning("Error sending email...!");
-    //         setSpinning(false);
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //       message.warning(error.response.data.message);
-    //       setSpinning(false);
-    //     }
-    //   } else {
-    //     message.warning("Please enter username..!");
-    //   }
-  };
-
-  function showPromiseConfirm() {
-    confirm({
-      title: "Reset Password ?",
-      icon: <ExclamationCircleOutlined />,
-      content:
-        "A password reset code will be sent to your registered Email id and Mobile number, please use it to reset the password..",
-      okText: "Reset",
-      cancelText: "Cancel",
-      onOk() {
-        forgotPwClicked();
-      },
-      onCancel() { },
-    });
+  const onFinish = async (values) => {
+    // console.log("On Finish --->", values);
+    if (validate(values)) {
+      localStorage.setItem("isLogged", true);
+      loginSuccess(values);
+      history.push("/dashboard");
+    }
   }
+
+  const validate = (values) => {
+    const { username, password, verify_password } = values;
+    // console.log("ITem For VAlidation ----------------------------> ", values, username, password, verify_password, password === undefined, verify_password === undefined);
+
+    var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
+    var numberRegex = /^[0-9.]+$/;
+
+    var EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var passwordRegex = /^([a-zA-Z0-9_-]){12,28}$/;
+    if ((username !== undefined || username !== null || username !== "") && (password !== undefined) && (verify_password === undefined)) {
+
+      if (
+        username === null ||
+        username === undefined ||
+        username === ""
+      ) {
+        message.error(`Please enter user Name !`, 5);
+        return false;
+      } else if (!username.match(EmailRegex)) {
+        message.error(`Please enter valid Username !`, 5);
+        return false;
+      } else if (
+        password === null ||
+        password === undefined ||
+        password === ""
+      ) {
+        message.error(`Please enter Password !`, 5);
+        return false;
+      } else if (password.match(alphaNumericRegex)) {
+        message.error(`Please enter Alpha Numeric Password !`, 5);
+        return false;
+      } else if (password.length < 12) {
+        message.error(`Your password must contain atleast 12 characters !`, 5);
+        return false;
+      }
+      return true;
+    }
+    else if ((username !== undefined || username !== null || username !== "") && (password === undefined) && (verify_password === undefined)) {
+      if (
+        username === null ||
+        username === undefined ||
+        username === ""
+      ) {
+        message.error(`Please enter user Name !`, 5);
+        return false;
+      } else if (!username.match(EmailRegex)) {
+        message.error(`Please enter valid Username !`, 5);
+        return false;
+      }
+      handleResetClick();
+      return false;
+    }
+    else if ((username === undefined) && (password !== undefined) && (verify_password !== undefined)) {
+      if (
+        password === null ||
+        password === undefined ||
+        password === ""
+      ) {
+        message.error(`Please enter New Password !`, 5);
+        return false;
+      } else if (password.match(alphaNumericRegex)) {
+        message.error(`Please enter Alpha Numeric Password !`, 5);
+        return false;
+      } else if (password.length < 12) {
+        message.error(`Your password must contain atleast 12 characters !`, 5);
+        return false;
+      } else if (password !== verify_password) {
+        message.error("Verify Password doesn't match with New Password.")
+        return false;
+      }
+      handleNewPasswordClick();
+      return false;
+    }
+    // else if (username === undefined) {
+    //   message.error(`From the Enter New Password !`, 5);
+    //   return false;
+    // }
+    // else if (
+    //   rowData.salary === null ||
+    //   rowData.salary === undefined ||
+    //   rowData.salary === "") {
+    //   message.error(`Please enter Salary !`, 5);
+    //   return false;
+    // }
+    // else if (rowData.salary < 0) {
+    //   message.error(`Salary cannot be less than 0 !`, 5);
+    //   return false;
+    // }
+
+    // return true;
+  };
+
   const handleCancelClick = () => {
     setForgotScreen(false)
     setResetMsgShow(false)
+    setEnterPasswordScreen(false)
+  }
+
+  const handleNewPasswordClick = () => {
+    message.success("Password Updated successfully", 5);
+    setForgotScreen(false)
+    setResetMsgShow(false)
+    setEnterPasswordScreen(false)
+  }
+
+  const handleResetClick = () => {
+
+    message.success("Password Updated successfully", 5);
+    setForgotScreen(false)
+    setResetMsgShow(false)
+    setEnterPasswordScreen(false)
   }
 
   const logo = <LogoITC className="itc-logo" />;
 
   return (
-    <Spin spinning={spinning}>
-      <>
-        {/* <Modal
-        visible={forgotPwModal}
-        footer={false}
-        maskClosable={false}
-        closable={false}
-        className="forgot-pw-modal"
-      >
-        <div className="reset-pw">
-          <div className="header">
-            A password reset code has been sent to the registered Email id and
-            Mobile number.
-          </div>
-          <div className="login-form">
-            <Form
-              form={form2}
-              name="reset_pw"
-              initialValues={{ remember: false }}
-              size="large"
-              onFinish={onFinishReset}
-              onFinishFailed={onFinishFailedReset}
-            >
-              <Form.Item
-                name="old_password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input password !",
-                  },
-                ]}
-                label="Reset Code"
-              >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  // type="password"
-                  placeholder={"Reset Code"}
-                />
-              </Form.Item>
-              <Form.Item
-                name="new_password"
-                dependencies={["old_password"]}
-                hasFeedback
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input password !",
-                  },
-                  ({ getFieldValue }) => ({
-                    validator(rule, value) {
-                      if (!value || getFieldValue("old_password") !== value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(
-                        "The new password should not be same as reset Code !"
-                      );
-                    },
-                  }),
-                ]}
-                label="New Password"
-              >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  // type="password"
-                  placeholder={"New Password"}
-                />
-              </Form.Item>
-              <Form.Item
-                name="confirm_password"
-                dependencies={["new_password"]}
-                hasFeedback
-                label="Confirm Password"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please confirm your password !",
-                  },
-                  ({ getFieldValue }) => ({
-                    validator(rule, value) {
-                      if (!value || getFieldValue("new_password") === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(
-                        "Confirm password does not match with new password !"
-                      );
-                    },
-                  }),
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  // type="password"
-                  placeholder={"Confirm Password"}
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <div className="reset-btn-container">
-                  <Button
-                    type="primary"
-                    size={"large"}
-                    block
-                    htmlType="submit"
-                    loading={resetting}
-                  >
-                    Reset Password
-                  </Button>
-                </div>
-              </Form.Item>
-            </Form>
-          </div>
-        </div>
-      </Modal> */}
-      </>
-      <BarLoader loading={loader} width={"100%"} color="#fdbc2c" />
-
+    <Spin spinning={false}>
+      {/* <BarLoader loading={loader} width={"100%"} color="#fdbc2c" /> */}
+      {/* {console.log("User Data", currentUser)} */}
       <div className="login">
         <div className="login-container">
           {/* <div className="left-container">
             <div className="logo-container">{logo}</div>
           </div> */}
           <div className="right-container">
-            <div className="header">{forgotScreen ? "Forgot Password ?" : "Login to the Dashboard"}</div>
-            {/* <div className="sub-header">
-              Hi user, sign in and start managing your auctions
-            </div> */}
+            <div className="header">
+              {forgotScreen ? "Forgot Password ?" : enterPasswordScreen ? "Enter New Password" : "Login to the Dashboard"}</div>
+            {enterPasswordScreen && <div className="sub-header">
+              {"Your password must contain atleast 12 characters with Alphabets & Numericals"}
+            </div>}
             <div className="form-container">
               {/* <div className="login-form"> */}
               <Form
@@ -303,10 +171,10 @@ const LoginPage = (props) => {
                 //   className="login-form"
                 initialValues={{ remember: true }}
                 size="large"
-              // onFinish={onFinish}
+                onFinish={onFinish}
               // onFinishFailed={onFinishFailed}
               >
-                <Form.Item
+                {!enterPasswordScreen ? <Form.Item
                   name="username"
                   rules={[
                     {
@@ -320,7 +188,22 @@ const LoginPage = (props) => {
                     placeholder={"Username"}
                   />
                 </Form.Item>
-                {!forgotScreen && <Form.Item
+                  : <Form.Item
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter new Password !",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      // prefix={<LockOutlined className="site-form-item-icon" />}
+                      // type="password"
+                      placeholder={"Enter New Password"}
+                    />
+                  </Form.Item>}
+                {!forgotScreen && !enterPasswordScreen && <Form.Item
                   name="password"
                   rules={[
                     {
@@ -333,6 +216,22 @@ const LoginPage = (props) => {
                     // prefix={<LockOutlined className="site-form-item-icon" />}
                     // type="password"
                     placeholder={"Password"}
+                  />
+                </Form.Item>
+                }
+                {enterPasswordScreen && <Form.Item
+                  name="verify_password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input verify password !",
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    // prefix={<LockOutlined className="site-form-item-icon" />}
+                    // type="password"
+                    placeholder={"Verify Password"}
                   />
                 </Form.Item>
                 }
@@ -354,23 +253,26 @@ const LoginPage = (props) => {
                     <a
                       className="custom-link"
                       // onClick={() => showPromiseConfirm()}
-                      onClick={() => setEnterPasswordScreen(true)}
+                      onClick={() => {
+                        setForgotScreen(false)
+                        setResetMsgShow(false)
+                        setEnterPasswordScreen(true)
+                      }}
                     >
                       Enter password
                   </a>
                   </Form.Item>
-                </div> : <Form.Item className="forgot-text-align-left">
-                    <a
-                      className="custom-link"
-                      // onClick={() => showPromiseConfirm()}
-                      onClick={() => setForgotScreen(true)}
-                    >
-                      Forgot password ?
+                </div> : enterPasswordScreen ? null : <Form.Item className="forgot-text-align-left">
+                  <a
+                    className="custom-link"
+                    // onClick={() => showPromiseConfirm()}
+                    onClick={() => setForgotScreen(true)}
+                  >
+                    Forgot password ?
                   </a>
-                  </Form.Item>
+                </Form.Item>
                 }
                 <div style={{ display: "block", width: "100%" }}>
-                  {/* <Form.Item> */}
                   <Button
                     type="primary"
                     className="signup-btn"
@@ -379,15 +281,23 @@ const LoginPage = (props) => {
                     block
                     htmlType="submit"
                     onClick={() => {
-                      forgotScreen ? handleCancelClick()
+                      forgotScreen || enterPasswordScreen ? handleCancelClick()
                         : alert("SignUp Form under Construction")
                     }}
                   >
-                    {forgotScreen ? "CANCEL" : "NEW ? SIGNUP"}
+                    {forgotScreen || enterPasswordScreen ? "CANCEL" : "NEW ? SIGNUP"}
                   </Button>
-                  {/* </Form.Item> */}
-                  {/* <Form.Item> */}
-                  <Button
+                  {<Button
+                    type="primary"
+                    className="login-btn"
+                    // icon={<LoginOutlined />}
+                    size={"large"}
+                    block
+                    htmlType="submit"
+                  >
+                    {forgotScreen ? "RESET" : enterPasswordScreen ? "SAVE" : "LOGIN NOW"}
+                  </Button>}
+                  {/* {(forgotScreen || enterPasswordScreen) && <Button
                     type="primary"
                     className="login-btn"
                     // icon={<LoginOutlined />}
@@ -395,102 +305,31 @@ const LoginPage = (props) => {
                     block
                     htmlType="submit"
                     onClick={() => {
-                      forgotScreen ? setResetMsgShow(true) : onFinish()
+                      forgotScreen ? setResetMsgShow(true) : handleNewPasswordClick()
                     }}
                   >
-                    {forgotScreen ? "RESET" : "LOGIN NOW"}
-                  </Button>
-                  {/* </Form.Item> */}
+                    {forgotScreen ? "RESET" : "SAVE"}
+                  </Button>} */}
                 </div>
               </Form>
             </div>
           </div>
         </div>
 
-        {/* <div className="login-container">
-          <div className="login-card">
-            <div className="form-header">
-              <div className="main-header">Sign In</div>
-              <div className="sub-header">
-                Hi user, sign in and start managing your auctions
-              </div>
-            </div>
-            <div className="login-form">
-              <Form
-                form={form}
-                name="normal_login"
-                //   className="login-form"
-                initialValues={{ remember: true }}
-                size="large"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-              >
-                <Form.Item
-                  name="username"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input username !",
-                    },
-                  ]}
-                >
-                  <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    placeholder={"Username"}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input password !",
-                    },
-                  ]}
-                >
-                  <Input.Password
-                    prefix={<LockOutlined className="site-form-item-icon" />}
-                    // type="password"
-                    placeholder={"Password"}
-                  />
-                </Form.Item>
-
-                <Form.Item className="text-align-center">
-                  <a
-                    className="custom-link"
-                    onClick={() => showPromiseConfirm()}
-                  >
-                    Forgot password ?
-                  </a>
-                </Form.Item>
-
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    icon={<LoginOutlined />}
-                    size={"large"}
-                    block
-                    htmlType="submit"
-                  >
-                    Login
-                  </Button>
-                </Form.Item>
-              </Form>
-            </div> 
-          </div>
-        </div>*/}
       </div>
     </Spin >
   );
 };
 
 const mapStateToProps = state => {
-
+  return {
+    currentUser: state.login.currentUser
+  }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
+    loginSuccess: (userData) => dispatch(loginSuccess(userData)),
   };
 };
 

@@ -120,7 +120,7 @@
     }
     .right-container {
       width: 420px !important;
-      height: 340px;
+      min-height: 340px;
       background-color: #ebebeb;
       // display: inline-flex;
       // flex-direction: column;
@@ -145,8 +145,10 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
       .sub-header {
-        // font-size: 24px;
-        margin-bottom: 40px;
+        justify-content: flex-start;
+        font-size: 12px;
+        margin-left: 20px;
+        width: 85%;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
       .form-container {
@@ -237,7 +239,7 @@
         .forgot-text-align-left {
           text-align: left !important;
           margin-left: 30px;
-      }
+        }
         .text-align-left {
           display: inline-block !important;
           text-align: left !important;
@@ -248,7 +250,7 @@
           text-align: right !important;
           width: 45%;
         }
-        .rest-text{
+        .rest-text {
           margin: 10px 0px;
           padding: 6px;
         }

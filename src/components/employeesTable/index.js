@@ -251,7 +251,7 @@ const EmployeesTable = (props) => {
 
   const setTableData = () => {
     isTable && buildChart();
-    console.log("mandi table data ", employeesTableData);
+    // console.log("mandi table data ", employeesTableData);
     if (
       employeesTableData !== undefined ||
       employeesTableData.length >= 0
@@ -273,7 +273,7 @@ const EmployeesTable = (props) => {
 
       // setEmployeesTableData(modifiedEmployeeTableData)
       // setIsSpinnerOnLoad(false);
-      console.log("Modified => ", modifiedEmployeeTableData);
+      // console.log("Modified => ", modifiedEmployeeTableData);
       return modifiedEmployeeTableData;
     } else {
       // setEmployeesTableData(dummyData);
@@ -399,7 +399,7 @@ const EmployeesTable = (props) => {
   };
 
   const submitTableRowData = (row, text) => {
-    console.log("Submit Row DAta", row);
+    // console.log("Submit Row DAta", row);
     if (validate(row)) {
       if (text === "update") {
         let newData = setTableData();
@@ -412,7 +412,7 @@ const EmployeesTable = (props) => {
           id: employeesTableData.length + 1, //temparorly i'm updating the ID with length + 1
           isEdit: false,
         })
-        console.log("Added the new REcord =====> ", employeesTableData);
+        // console.log("Added the new REcord =====> ", employeesTableData);
         setEmployeesTableData(employeesTableData);
 
         // if you want to update the main dummy list uncomment the below code
@@ -451,17 +451,8 @@ const EmployeesTable = (props) => {
   const validate = (rowData) => {
     // console.log("ITem For VAlidation ----------------------------> ", rowData);
 
-    // if (rowData.Mandi_Min_Buying_MT === null || rowData.Mandi_Min_Buying_MT === undefined || rowData.Mandi_Min_Buying_MT === "") {
-    //   message.error(`Please enter the Minimum buying price for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`,5);
-    //   return false;
-    // }
     var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
     var numberRegex = /^[0-9.]+$/;
-
-    // if (!rowData.Mandi_Min_Buying_MT.match(numberRegex)) {
-    //   message.error(`Please enter valid Minimum buying price for ${rowData.mandi_name},${rowData.hub_name}, ${rowData.region_name} and ${rowData.hub_region_name} !`, 5);
-    //   return false;
-    // }
 
     if (
       rowData.full_name === null ||
@@ -514,17 +505,16 @@ const EmployeesTable = (props) => {
   };
 
   const handleDropdownChange = (value, row, target, index, optionlabel, isPopup) => {
-    console.log(
-      "row on handlechange =========> ",
-      row,
-      value,
-      index,
-      target,
-      optionlabel,
-      isPopup
-    );
+    // console.log(
+    //   "row on handlechange =========> ",
+    //   row,
+    //   value,
+    //   index,
+    //   target,
+    //   optionlabel,
+    //   isPopup
+    // );
 
-    console.log("region ame1 ", value, optionlabel)
     if (target === "department") {
       if (value === "") {
         setNewFormData({
@@ -553,7 +543,7 @@ const EmployeesTable = (props) => {
   };
 
   const handleChange = (e, row, index, name, isPopup) => {
-    console.log("row on handlechange running", e, name, index, row);
+    // console.log("row on handlechange running", e, name, index, row);
 
     let a;
     var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
@@ -625,7 +615,7 @@ const EmployeesTable = (props) => {
 
     }
     else {
-      console.log("new data ", newFormData);
+      // console.log("new data ", newFormData);
       a = newFormData;
 
       switch (name) {
@@ -792,16 +782,15 @@ const EmployeesTable = (props) => {
    * @memberof CombinedChart
    */
   const buildChart = () => {
-    var myChart;
-    console.log("Cahrt ID", myChart, typeof myChart);
-    if (typeof myChart !== "undefined" && typeof myChart !== undefined) {
+    // console.log("Cahrt ID", myChart, typeof myChart);
+    if ((typeof myChart !== "undefined" && typeof myChart !== undefined) || myChart !== undefined) {
       myChart.destroy();
     }
     var ctx = document.getElementById(`myChart`);
 
     if (ctx !== null) {
       ctx = ctx.getContext("2d");
-      myChart = new Chart(ctx, {
+      var myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
           labels: employeeDetails && employeeDetails.length && employeeDetails.map(item => item.department),
