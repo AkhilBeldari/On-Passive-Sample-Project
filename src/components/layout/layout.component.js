@@ -22,9 +22,13 @@ const { Header, Sider, Content, Footer } = Layout;
 const { Option } = Select;
 
 class MainLayout extends React.Component {
-  state = {
-    collapsed: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      collapsed: false,
+    };
+  }
+
 
   toggle = () => {
     this.setState({
@@ -40,6 +44,11 @@ class MainLayout extends React.Component {
     console.log('search:', val);
   }
 
+  /**
+   * @description Component for user management tab
+   *
+   * @component
+   */
   render() {
     return (
       <Layout>
@@ -57,7 +66,13 @@ class MainLayout extends React.Component {
               Users
         </Menu.Item>
             <Menu.Item key="4" icon={<SettingOutlined />}>
-              Settins
+              Settings
+        </Menu.Item>
+            <Menu.Item key="5" icon={<SettingOutlined />} onClick={() => {
+              localStorage.removeItem("isLogged");
+              this.props.history.push("/login");
+            }}>
+              Logout
         </Menu.Item>
           </Menu>
         </Sider>

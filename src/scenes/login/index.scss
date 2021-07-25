@@ -1,0 +1,350 @@
+@import "../../constants//style-variables.scss";
+.itc-logo {
+  width: 400px;
+}
+.login {
+  color: $primary-font-blue;
+  // background-color: $background-grey;
+  background-color: #696d8d !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 30px);
+
+  .login-header {
+    padding: 35px;
+  }
+  .left-container {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 90%;
+    // width: 50%;
+    width: 250px;
+    align-items: center;
+    // align-items: center;
+    // color: white;
+    // overflow: hidden;
+
+    .main-header {
+      font-size: 22px;
+    }
+    .sub-header {
+      font-weight: 200;
+    }
+    .logo-container {
+      margin-top: 15px;
+      width: 250px !important;
+      display: inline-flex;
+      .sample-logo {
+        width: 100px;
+        height: 100px;
+        fill: $tab-bg-grey;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Non-prefixed version, currently
+                                        supported by Chrome, Edge, Opera and Firefox */
+      }
+    }
+  }
+  .login-container {
+    display: flex;
+    // margin-top: 10%;
+    // margin: 10% 25%;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    border-radius: 30px;
+    // position: absolute;
+    // right: 25%;
+    overflow: hidden;
+    // width: 280px;
+    // box-shadow: 0px 20px 28px -17px black;
+    box-shadow: 0px 20px 15px -17px #999999;
+
+    .login-card {
+      width: 380px;
+      .form-header {
+        .main-header {
+          display: flex;
+          justify-content: center;
+          font-size: 60px;
+          font-weight: 100;
+        }
+        .sub-header {
+          display: flex;
+          justify-content: center;
+          font-weight: 300;
+        }
+      }
+    }
+    .left-container {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 460px;
+      // width: 50%;
+      width: 420px;
+      align-items: center;
+      align-items: center;
+      // color: white;
+      // overflow: hidden;
+      background-color: white;
+
+      .main-header {
+        font-size: 22px;
+      }
+      .sub-header {
+        font-weight: 200;
+      }
+      .logo-container {
+        margin-top: 15px;
+        width: 300px !important;
+        display: inline-flex;
+        .sample-logo {
+          width: 100px;
+          height: 100px;
+          fill: $tab-bg-grey;
+          -webkit-touch-callout: none; /* iOS Safari */
+          -webkit-user-select: none; /* Safari */
+          -khtml-user-select: none; /* Konqueror HTML */
+          -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+          user-select: none; /* Non-prefixed version, currently
+                                          supported by Chrome, Edge, Opera and Firefox */
+        }
+      }
+    }
+    .right-container {
+      width: 420px !important;
+      height: 340px;
+      background-color: #ebebeb;
+      // display: inline-flex;
+      // flex-direction: column;
+      // justify-content: center;
+      // align-items: center;
+      // border-radius: 40px;
+      .head {
+        font-size: 22px;
+        // margin: -17px 10px 22px 10px;
+        margin: 50px 0px 10px 0px;
+        color: #20346a;
+        font-weight: 600;
+      }
+      .header {
+        // font-size: 22px;
+        font-size: 30px;
+        color: #20346a;
+        height: 40px;
+        margin: 10px 0px 10px 20px;
+        // color: #20346a;
+        font-weight: 600;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .sub-header {
+        // font-size: 24px;
+        margin-bottom: 40px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .form-container {
+        width: 90%;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 10px 0px 10px 20px;
+
+        .ant-form {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          align-items: center;
+        }
+        .ant-form-item {
+          margin-bottom: 2px;
+          text-align: center;
+          width: 100%;
+        }
+        .ant-input {
+          line-height: 2.2;
+          width: 100%;
+          border-radius: 40px;
+        }
+        .ant-input-lg {
+          padding: 6.5px 11px !important;
+          font-size: 16px !important;
+          border: 1px solid #999999;
+          /* background-color: transparent !important; */
+        }
+        .ant-input-affix-wrapper {
+          border: none;
+          background-color: #ebebeb;
+          padding: 0px;
+          margin-top: 20px;
+          // border-bottom: 1px solid #e3e3ec;
+        }
+        .internal-autofill-selected {
+          appearance: menulist-button;
+          background-color: white !important;
+        }
+        .anticon-eye-invisible,
+        .anticon-eye {
+          height: 20px;
+          width: 20px;
+          font-size: 20px;
+        }
+        .ant-input-suffix {
+          margin-left: 4px;
+          /* display: none; */
+          position: absolute;
+          right: 15px;
+          top: 16px;
+        }
+        .ant-btn-primary {
+          border-radius: 20px;
+          width: 139px !important;
+          color: #fff;
+          background: #14121f;
+          border-color: #14121f;
+          border-radius: 20px;
+          height: 33px;
+          font-size: 15px;
+          line-height: 0px;
+        }
+        .custom-link {
+          color: #20346a;
+          // font-size: 24px;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .signup-btn {
+          display: inline-block;
+          margin-top: 10px;
+          margin-right: 35%;
+          background-color: #20346a;
+          width: 35% !important;
+          height: 40px;
+        }
+        .login-btn {
+          display: inline-block;
+          margin-top: 10px;
+          background-color: #20346a;
+          width: 30% !important;
+          height: 40px;
+        }
+        .forgot-text-align-left {
+          text-align: left !important;
+          margin-left: 30px;
+      }
+        .text-align-left {
+          display: inline-block !important;
+          text-align: left !important;
+          width: 45%;
+        }
+        .text-align-right {
+          display: inline-block !important;
+          text-align: right !important;
+          width: 45%;
+        }
+        .rest-text{
+          margin: 10px 0px;
+          padding: 6px;
+        }
+      }
+    }
+    .login-form {
+      padding: 28px 45px;
+      .ant-input-affix-wrapper {
+        background-color: $background-grey;
+        border: none;
+        border-bottom: 1px solid $mustard-yellow;
+        .ant-input {
+          background: transparent;
+          color: $primary-font-blue;
+          font-size: 14px;
+        }
+        .ant-input-prefix {
+          svg {
+            fill: $primary-font-blue;
+          }
+        }
+      }
+      .ant-input-affix-wrapper-lg {
+        padding: 0px 11px;
+      }
+      .ant-form-item {
+        margin-bottom: 12px;
+        a {
+          color: $primary-font-blue;
+          display: flex;
+          justify-content: flex-end;
+        }
+        .ant-btn-primary {
+          background: $primary-font-blue;
+          border-color: $primary-font-blue;
+          border-radius: 20px;
+          width: 50%;
+        }
+      }
+    }
+  }
+}
+
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  box-shadow: 0 0 0 2px rgba(24, 143, 255, 0);
+}
+
+.forgot-pw-modal {
+  .ant-col {
+    width: 140px;
+  }
+  .reset-pw {
+    .header {
+      font-weight: 600;
+    }
+    .login-form {
+      padding: 20px 20px 0 20px;
+
+      .ant-form-item-explain.ant-form-item-explain-error {
+        padding: 0px 15px;
+      }
+      .ant-input-affix-wrapper {
+        background-color: $background-grey;
+        border: 1px solid $primary-font-blue;
+        border-radius: 40px;
+        .ant-input {
+          background: transparent;
+          color: $primary-font-blue;
+          font-size: 14px;
+        }
+        .ant-input-prefix {
+          svg {
+            fill: $primary-font-blue;
+          }
+        }
+      }
+      .ant-input-affix-wrapper-lg {
+        padding: 5px 11px;
+      }
+      .ant-form-item {
+        margin-bottom: 12px;
+        .reset-btn-container {
+          display: flex;
+          justify-content: flex-end;
+          .ant-btn-primary {
+            background: $primary-font-blue;
+            border-color: $primary-font-blue;
+            border-radius: 20px;
+            line-height: 20px;
+            font-size: 15px;
+            width: max-content;
+            height: 35px;
+          }
+        }
+      }
+    }
+  }
+}

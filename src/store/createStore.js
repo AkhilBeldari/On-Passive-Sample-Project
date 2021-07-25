@@ -11,7 +11,7 @@ import middleware, { sagaMiddleware } from './middleware';
 //========================================
 const reducer = persistReducer(
     {
-        key: 'vsdp-vht', // key is required
+        key: 'on-passive', // key is required
         storage, // storage is now required (using localStorage)
         whitelist: [], // only this list will be persisted
         blacklist: [], // list will not be persisted

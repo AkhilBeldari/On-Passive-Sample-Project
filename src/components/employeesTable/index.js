@@ -24,11 +24,6 @@ const { Search } = Input;
 const { Option } = Select;
 const { confirm } = Modal;
 
-/**
- * @description Component for user management tab
- *
- * @component
- */
 const dummyData = [{
   id: 1,
   full_name: "Akhil Raj",
@@ -255,6 +250,7 @@ const EmployeesTable = (props) => {
   )
 
   const setTableData = () => {
+    isTable && buildChart();
     console.log("mandi table data ", employeesTableData);
     if (
       employeesTableData !== undefined ||
@@ -418,6 +414,15 @@ const EmployeesTable = (props) => {
         })
         console.log("Added the new REcord =====> ", employeesTableData);
         setEmployeesTableData(employeesTableData);
+
+        // if you want to update the main dummy list uncomment the below code
+        // dummyData.push({ 
+        //   ...newFormData,
+        //   id: employeesTableData.length + 1, //temparorly i'm updating the ID with length + 1
+        //   isEdit: false,
+        // })
+        // setEmployeesTableData(dummyData);
+
         setNewFormData({
           id: null,
           full_name: null,
@@ -427,9 +432,18 @@ const EmployeesTable = (props) => {
           age: null,
           salary: null
         })
-        // isTable && buildChart();
         history.push("/dashboard")
-        window.location.reload()
+
+        var thisInterval = setInterval(function () {
+          //this if statment checks if the id "myChart" is linked to something
+          if (document.getElementById("myChart") != null) {
+            buildChart()
+            //clearInterval() will remove the interval if you have given your interval a name.
+            clearInterval(thisInterval)
+          }
+        }, 500)
+
+        // window.location.reload() // to force reload but the newly added row will vanish.
       }
     }
   };
@@ -537,10 +551,6 @@ const EmployeesTable = (props) => {
       }
     }
   };
-
-  // const handleCancel = () => {
-  //   setState({ isModalVisible: false });
-  // };
 
   const handleChange = (e, row, index, name, isPopup) => {
     console.log("row on handlechange running", e, name, index, row);
@@ -782,43 +792,46 @@ const EmployeesTable = (props) => {
    * @memberof CombinedChart
    */
   const buildChart = () => {
-    let myChartPie = "0";
-    console.log("Cahrt ID", myChartPie, typeof myChartPie);
-    if (typeof myChartPie !== "undefined" && typeof myChartPie !== undefined) console.log("Cahrt ID", myChartPie, typeof myChartPie);
-    // else myChartPie.destroy();
+    var myChart;
+    console.log("Cahrt ID", myChart, typeof myChart);
+    if (typeof myChart !== "undefined" && typeof myChart !== undefined) {
+      myChart.destroy();
+    }
+    var ctx = document.getElementById(`myChart`);
 
-    let ctx = document.getElementById('myChartPie').getContext("2d");
-    myChartPie = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: employeeDetails && employeeDetails.length && employeeDetails.map(item => item.department),
-        datasets: [{
-          // label: 'My First Dataset',
-          data: employeeDetails && employeeDetails.length && employeeDetails.map(item => item.value),
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)',
-            'rgb(255,140,0)',
-            'rgb(124,252,0)'
-          ],
-          hoverOffset: 4
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'right',
-          },
-          title: {
-            display: true,
-            // text: 'Chart.js Doughnut Chart'
+    if (ctx !== null) {
+      ctx = ctx.getContext("2d");
+      myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: employeeDetails && employeeDetails.length && employeeDetails.map(item => item.department),
+          datasets: [{
+            // label: 'My First Dataset',
+            data: employeeDetails && employeeDetails.length && employeeDetails.map(item => item.value),
+            backgroundColor: [
+              'rgb(255, 99, 132)',
+              'rgb(54, 162, 235)',
+              'rgb(255, 205, 86)',
+              'rgb(255,140,0)',
+              'rgb(124,252,0)'
+            ],
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'right',
+            },
+            title: {
+              display: true,
+              // text: 'Chart.js Doughnut Chart'
+            }
           }
         }
-      }
-    });
-
+      });
+    }
   };
 
   return (
@@ -826,13 +839,14 @@ const EmployeesTable = (props) => {
       className="employee-table"
       style={{ height: window.innerHeight - 85, marginTop: "0px" }}
     >
+
       {isTable ?
         <>
           <div className="info-container">
             <div className="piechart-info">
               <div className="title">Departments</div>
               <div className="details">
-                <canvas id="myChartPie" width="320" height="320"></canvas>
+                <canvas id={`myChart`} width="320" height="320"></canvas>
               </div>
             </div>
             <div className="department-info">

@@ -27,30 +27,3 @@ export const clearLoginState = (message) => {
         payload: message
     }
 }
-
-export const EnableSessionExpiry = (data) => {
-    return {
-        type: types.SESSION_EXPIRY_SUCCESS,
-        payload: data
-    }
-}
-
-export const clearSessionExpiry = () => {
-    return {
-        type: types.CLEAR_SESSION_EXPIRY,
-    }
-}
-
-export const adminLogin = (adminUserDetails) => {
-    return {
-        type: types.ADMIN_LOGIN,
-        payload: adminUserDetails
-    }
-}
-
-export const clearUserDisableState = (val) => {
-    return {
-        type: types.USER_DISABLED,
-        payload: val
-    }
-}

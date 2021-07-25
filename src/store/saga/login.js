@@ -61,52 +61,9 @@ function* userDetails(action) {
     }
 }
 
-
-function* adminLogin(action) {
-    const { data, error } = yield call(AdminLogin.adminLogin, action);
-    // if (data) {
-    //     if (data.role) {
-    //         yield put({
-    //             type: types.USER_LOGIN_SUCCESS,
-    //             payload: data
-    //         });
-    //     } 
-    //     else if (data.message) {
-    //         yield put({
-    //             type: types.USER_LOGIN_FAILURE,
-    //             payload: data.message
-    //         });
-    //     }
-    // }
-    if (data) {
-        if (data.role && data.status === "Success") {
-            yield put({
-                type: types.USER_LOGIN_SUCCESS,
-                payload: data
-            });
-        } else if (data.status === "disabled") {
-            yield put({
-                type: types.USER_DISABLED,
-                payload: true
-            });
-        } else if(data.error){
-            yield put({
-                type: types.USER_LOGIN_FAILURE,
-                payload: data.error
-            });
-        } else if (data.msg && data.msg === "Token has expired") {
-            yield put({
-                type: types.SESSION_EXPIRY_SUCCESS,
-                payload: true
-            });
-        }
-    }
-}
-
 export function* loginSaga() {
     yield all([
         takeEvery(types.USER_LOGIN, login),
         takeEvery(types.USER_DETAILS, userDetails),
-        takeEvery(types.ADMIN_LOGIN, adminLogin)
     ])
 }
