@@ -9,14 +9,11 @@ import {
   message,
   Form,
   Modal,
-  DatePicker,
-  Radio,
 } from "antd";
 
 import {
   ExclamationCircleOutlined
 } from '@ant-design/icons';
-import moment from "moment";
 import Chart from 'chart.js/auto';
 import { withRouter } from "react-router-dom";
 
@@ -250,7 +247,8 @@ const EmployeesTable = (props) => {
   )
 
   const setTableData = () => {
-    isTable && buildChart();
+    // isTable && buildChart(); // Don't do that
+
     // console.log("mandi table data ", employeesTableData);
     if (
       employeesTableData !== undefined ||
@@ -344,62 +342,63 @@ const EmployeesTable = (props) => {
     }
   }, [searchText])
 
-  const TableColumnHeader = (props) => {
-    const { title, subtitle } = props;
-    return (
-      <div className="column-header-container">
-        <div
-          style={{
-            color: "white",
-            fontSize: "12px",
-            whiteSpace: "nowrap",
-            fontWeight: "normal",
-            textAlign: "left",
-          }}
-        >
-          {title}
-        </div>
-        <div
-          style={{
-            color: "#cbdfff",
-            fontSize: "11px",
-            fontWeight: "normal",
-            textAlign: "left",
-            // subtitle && title.length < subtitle.length ? "left" : "center"
-          }}
-        >
-          {subtitle}
-        </div>
-      </div>
-    );
-  };
+  // const TableColumnHeader = (props) => {
+  //   const { title, subtitle } = props;
+  //   return (
+  //     <div className="column-header-container">
+  //       <div
+  //         style={{
+  //           color: "white",
+  //           fontSize: "12px",
+  //           whiteSpace: "nowrap",
+  //           fontWeight: "normal",
+  //           textAlign: "left",
+  //         }}
+  //       >
+  //         {title}
+  //       </div>
+  //       <div
+  //         style={{
+  //           color: "#cbdfff",
+  //           fontSize: "11px",
+  //           fontWeight: "normal",
+  //           textAlign: "left",
+  //           // subtitle && title.length < subtitle.length ? "left" : "center"
+  //         }}
+  //       >
+  //         {subtitle}
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
-  const createFilters = (label) => {
-    let filterData = employeesTableData;
-    //#region remove duplicate objects
-    let uniqueFilterData = [];
+  // const createFilters = (label) => {
+  //   let filterData = employeesTableData;
+  //   //#region remove duplicate objects
+  //   let uniqueFilterData = [];
 
-    filterData.map((mainItem) =>
-      uniqueFilterData.filter((item) => item[label] === mainItem[label])
-        .length > 0
-        ? null
-        : uniqueFilterData.push(mainItem)
-    );
+  //   filterData.map((mainItem) =>
+  //     uniqueFilterData.filter((item) => item[label] === mainItem[label])
+  //       .length > 0
+  //       ? null
+  //       : uniqueFilterData.push(mainItem)
+  //   );
 
-    uniqueFilterData = uniqueFilterData.map((item) => {
-      return {
-        text: item[label],
-        value: item[label],
-      };
-    });
+  //   uniqueFilterData = uniqueFilterData.map((item) => {
+  //     return {
+  //       text: item[label],
+  //       value: item[label],
+  //     };
+  //   });
 
-    //#endregion
+  //   //#endregion
 
-    return uniqueFilterData;
-  };
+  //   return uniqueFilterData;
+  // };
 
   const submitTableRowData = (row, text) => {
     // console.log("Submit Row DAta", row);
+    setIsSpinnerOnLoad(true)
     if (validate(row)) {
       if (text === "update") {
         let newData = setTableData();
@@ -445,14 +444,15 @@ const EmployeesTable = (props) => {
 
         // window.location.reload() // to force reload but the newly added row will vanish.
       }
+      setIsSpinnerOnLoad(false)
     }
   };
 
   const validate = (rowData) => {
-    // console.log("ITem For VAlidation ----------------------------> ", rowData);
+    // console.log("ITem For VAlidation ----------------------------> ", rowData, parseInt(rowData.salary) < 0 || parseInt(rowData.salary) > 1500000);
 
-    var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
-    var numberRegex = /^[0-9.]+$/;
+    // var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
+    // var numberRegex = /^[0-9.]+$/;
 
     if (
       rowData.full_name === null ||
@@ -496,11 +496,11 @@ const EmployeesTable = (props) => {
       message.error(`Please enter Salary !`, 5);
       return false;
     }
-    else if (rowData.salary < 0) {
-      message.error(`Salary cannot be less than 0 !`, 5);
+    else if (parseInt((rowData.salary).replaceAll(",", "")) < 0 || parseInt((rowData.salary).replaceAll(",", "")) > 1500000) {
+      message.error(`Salary should be greater then 0 and less than 15 Lakhs  !`, 5);
       return false;
     }
-
+    setIsSpinnerOnLoad(false);
     return true;
   };
 
@@ -546,7 +546,7 @@ const EmployeesTable = (props) => {
     // console.log("row on handlechange running", e, name, index, row);
 
     let a;
-    var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
+    // var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
     var alphabetsRegex = /^[a-zA-Z ]*$/;
     var numberRegex = /^[0-9.]+$/;
     var salaryRegex = /^[0-9,]+$/;
@@ -782,15 +782,24 @@ const EmployeesTable = (props) => {
    * @memberof CombinedChart
    */
   const buildChart = () => {
-    // console.log("Cahrt ID", myChart, typeof myChart);
-    if ((typeof myChart !== "undefined" && typeof myChart !== undefined) || myChart !== undefined) {
-      myChart.destroy();
+
+    // console.log("Cahrt ID", myChart, typeof myChart, " ======= >", myChart === null, "--->", myChart !== null);
+
+    // if ((typeof myChart !== "undefined" && typeof myChart !== undefined) || myChart !== undefined || myChart !== null) {
+    // console.log("In side If Cahrt ID", myChart, typeof myChart);
+    //   myChart.getContext("2d").destroy();
+    // }
+
+    if(window.myChart instanceof Chart)
+    {
+        window.myChart.destroy();
     }
+
     var ctx = document.getElementById(`myChart`);
 
     if (ctx !== null) {
-      ctx = ctx.getContext("2d");
-      var myChart = new Chart(ctx, {
+      var ctx1 = ctx.getContext("2d");
+      var myChart = new Chart(ctx1, {
         type: 'doughnut',
         data: {
           labels: employeeDetails && employeeDetails.length && employeeDetails.map(item => item.department),
@@ -1566,7 +1575,7 @@ const EmployeesTable = (props) => {
                   <div className="left"> Full Name </div>
                   <div className="right"> {newFormData.full_name} </div>
 
-                  <div lassName="left"
+                  <div className="left"
                   // style={{ width: "230px", marginLeft: "15%" }}
                   > Job Title </div>
                   <div className="right"> {newFormData.job_title} </div>

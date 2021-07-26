@@ -1,15 +1,15 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import "antd/dist/antd.css";
 
-import { Layout, message, Button } from "antd";
+import { Layout } from "antd";
 
 import MainLayout from "./components/layout/layout.component";
 import Login from "./scenes/login";
 
 import PrivateRoute from "./components/private-route/private-route";
 import { BrowserRouter as Router } from 'react-router-dom';
-import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 const { Footer } = Layout;

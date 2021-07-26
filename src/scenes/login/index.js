@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import "./index.scss";
 
-import { useHistory, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import { connect } from "react-redux";
 
 import { Form, Input, Button, message, Modal, Spin } from "antd";
 
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { ReactComponent as LogoITC } from "../../assets/itc_trade_next_logo.svg";
+// import { ReactComponent as LogoITC } from "../../assets/itc_trade_next_logo.svg";
 
-import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import { BarLoader } from "react-spinners";
+import { UserOutlined } from "@ant-design/icons";
+// import { BarLoader } from "react-spinners";
 import { loginSuccess } from '../../store/actions';
 
 const { confirm } = Modal;
@@ -38,12 +37,12 @@ const LoginPage = (props) => {
     // console.log("ITem For VAlidation ----------------------------> ", values, username, password, verify_password, password === undefined, verify_password === undefined);
 
     var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
-    var numberRegex = /^[0-9.]+$/;
+    // var numberRegex = /^[0-9.]+$/;
 
     var EmailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var passwordRegex = /^([a-zA-Z0-9_-]){12,28}$/;
-    if ((username !== undefined || username !== null || username !== "") && (password !== undefined) && (verify_password === undefined)) {
+    // var passwordRegex = /^([a-zA-Z0-9_-]){12,28}$/;
 
+    if ((username !== undefined || username !== null || username !== "") && (password !== undefined) && (verify_password === undefined)) {
       if (
         username === null ||
         username === undefined ||
@@ -106,23 +105,6 @@ const LoginPage = (props) => {
       handleNewPasswordClick();
       return false;
     }
-    // else if (username === undefined) {
-    //   message.error(`From the Enter New Password !`, 5);
-    //   return false;
-    // }
-    // else if (
-    //   rowData.salary === null ||
-    //   rowData.salary === undefined ||
-    //   rowData.salary === "") {
-    //   message.error(`Please enter Salary !`, 5);
-    //   return false;
-    // }
-    // else if (rowData.salary < 0) {
-    //   message.error(`Salary cannot be less than 0 !`, 5);
-    //   return false;
-    // }
-
-    // return true;
   };
 
   const handleCancelClick = () => {
@@ -146,12 +128,11 @@ const LoginPage = (props) => {
     setEnterPasswordScreen(false)
   }
 
-  const logo = <LogoITC className="itc-logo" />;
+  // const logo = <LogoITC className="itc-logo" />;
 
   return (
     <Spin spinning={false}>
       {/* <BarLoader loading={loader} width={"100%"} color="#fdbc2c" /> */}
-      {/* {console.log("User Data", currentUser)} */}
       <div className="login">
         <div className="login-container">
           {/* <div className="left-container">
@@ -164,7 +145,6 @@ const LoginPage = (props) => {
               {"Your password must contain atleast 12 characters with Alphabets & Numericals"}
             </div>}
             <div className="form-container">
-              {/* <div className="login-form"> */}
               <Form
                 form={form}
                 name="normal_login"
@@ -279,7 +259,7 @@ const LoginPage = (props) => {
                     // icon={<LoginOutlined />}
                     size={"large"}
                     block
-                    htmlType="submit"
+                    htmlType="button"
                     onClick={() => {
                       forgotScreen || enterPasswordScreen ? handleCancelClick()
                         : alert("SignUp Form under Construction")
@@ -297,6 +277,9 @@ const LoginPage = (props) => {
                   >
                     {forgotScreen ? "RESET" : enterPasswordScreen ? "SAVE" : "LOGIN NOW"}
                   </Button>}
+
+                  {/* Thought of writing the separate buttons but on the RESET and SAVE Clicks also to do validation used the same button  */}
+
                   {/* {(forgotScreen || enterPasswordScreen) && <Button
                     type="primary"
                     className="login-btn"

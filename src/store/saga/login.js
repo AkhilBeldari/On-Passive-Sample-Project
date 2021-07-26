@@ -1,6 +1,6 @@
 import { types } from '../constants';
 import { takeEvery, put, call, all } from 'redux-saga/effects';
-import { Login, AdminLogin, UserDetails } from '../../services/api';
+import { Login, UserDetails } from '../../services/api';
 
 // this generator function handles the login of the user wheather he is new user/ registered /  inactive user.
 

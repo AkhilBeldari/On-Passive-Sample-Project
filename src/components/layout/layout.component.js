@@ -1,7 +1,7 @@
 import React from "react";
 import "./layout.styles.css";
 
-import { Layout, Menu, Icon, Select } from "antd";
+import { Layout, Menu, Select } from "antd";
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -18,7 +18,7 @@ import {
   LogoutOutlined
 } from '@ant-design/icons';
 import 'antd/dist/antd.css';
-const { Header, Sider, Content, Footer } = Layout;
+const { Header, Sider, Content } = Layout;
 const { Option } = Select;
 
 class MainLayout extends React.Component {
@@ -89,7 +89,6 @@ class MainLayout extends React.Component {
                 placeholder="Select Language"
                 optionFilterProp="children"
                 showArrow
-                showSearch
                 onChange={() => this.onChange()}
                 onSearch={this.onSearch}
                 filterOption={(input, option) =>
